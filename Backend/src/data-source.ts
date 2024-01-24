@@ -1,8 +1,8 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User, UserProfile } from "./entity/User"
-import { Chat, Query, Response } from "./entity/Chat"
-import { Agent } from "./entity/Agent"
+import { User, UserProfile } from "./entities/User"
+import { Chat, Query, Response } from "./entities/Chat"
+import { Agent } from "./entities/Agent"
 
 export const AppDataSource = new DataSource({
     type: "mysql",

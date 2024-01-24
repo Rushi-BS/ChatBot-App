@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppDataSource = void 0;
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
-const User_1 = require("./entity/User");
-const Chat_1 = require("./entity/Chat");
-const Agent_1 = require("./entity/Agent");
+const User_1 = require("./entities/User");
+const Chat_1 = require("./entities/Chat");
+const Agent_1 = require("./entities/Agent");
 exports.AppDataSource = new typeorm_1.DataSource({
     type: "mysql",
     host: "localhost",
