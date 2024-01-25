@@ -9,10 +9,7 @@ export class User {
     email: string;
 
     @Column()
-    passwordHash: string;
-
-    @Column()
-    salt: string;
+    hashedPassword: string;
 
     @Column()
     createdAt: Date;

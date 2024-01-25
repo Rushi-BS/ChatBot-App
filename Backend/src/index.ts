@@ -1,11 +1,9 @@
 import express from 'express';
-import { config } from 'dotenv';
 import { AppDataSource } from './data-source';
-
-config();
+import config from './config';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const { port } = config;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +19,6 @@ app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
 
-app.listen(port, () => {
+app.listen(port || 3000, () => {
     console.log(`Server is running on port ${port}`);
 });

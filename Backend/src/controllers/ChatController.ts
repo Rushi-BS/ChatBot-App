@@ -34,7 +34,7 @@ class ChatController {
     // Method to update an existing chat
     updateChat = async (chatId: number, chatDataToUpdate: Chat): Promise<boolean> => {
         try {
-            let chat = await this.chatRepo.findOneBy({ id: chatId });
+            const chat = await this.chatRepo.findOneBy({ id: chatId });
             if (chat) {
                 await this.chatRepo.update(chatId, chatDataToUpdate);
                 return true;
@@ -50,9 +50,10 @@ class ChatController {
     // Method to delete a chat
     deleteChat = async (chatId: number): Promise<boolean> => {
         try {
-            let chat = await this.chatRepo.findOneBy({ id: chatId });
+            const chat = await this.chatRepo.findOneBy({ id: chatId });
             if (chat) {
                 chat.isDeleted = true;
+                await this.chatRepo.save(chat);
                 return true;
             }
             return false;

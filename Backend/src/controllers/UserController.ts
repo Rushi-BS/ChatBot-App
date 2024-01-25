@@ -9,17 +9,17 @@ class UserController {
         this.userRepo = AppDataSource.getRepository(User);
     }
 
-    // Method to get all users
+    // Method to get all users (/getAllUsers)
     getAllUsers = async (): Promise<User[]> => {
         return await this.userRepo.find();
     }
 
-    // Method to get a user by ID
+    // Method to get a user by ID (/getUserById)
     getUserById = async (id: number): Promise<User> => {
         return await this.userRepo.findOneBy({ id: id });
     }
 
-    // Method to create a new user
+    // Method to create a new user 
     createUser = async (user: User): Promise<boolean> => {
         try {
             await this.userRepo.save(user);
@@ -53,6 +53,7 @@ class UserController {
             let user = await this.userRepo.findOneBy({ id: id });
             if (user) {
                 user.isActive = false;
+                await this.userRepo.save(user);
                 return true;
             }
             return false;
