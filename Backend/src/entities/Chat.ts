@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Agent } from "./Agent";
+import { User } from "./User";
 
 @Entity()
 export class Chat {
@@ -9,8 +10,8 @@ export class Chat {
     @Column()
     chatName: string;
 
-    @Column()
-    startBy: number;
+    @ManyToOne(() => User, user => user.chats)
+    startBy: User;
 
     @Column()
     isAgentPresent: boolean;
@@ -54,6 +55,9 @@ export class Query {
 
 @Entity()
 export class Response {
+    status(arg0: number) {
+        throw new Error("Method not implemented.");
+    }
     @PrimaryGeneratedColumn()
     id: number;
 

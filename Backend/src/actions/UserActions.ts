@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 class UserActions {
     // Sign in user
     signIn(req: Request, res: Response): void {
-        // TODO: Implement sign-in logic
+        // TODO: Implement sign-in logic along with user profile retrieval
     }
 
     // Sign up user
@@ -19,6 +19,5 @@ class UserActions {
     // Delete user account
     deleteAccount(req, res): void {
         // TODO: Implement account deletion logic
-        
     }
 }

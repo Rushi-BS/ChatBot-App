@@ -1,4 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne, Relation} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne, Relation, OneToMany} from "typeorm";
+import { Chat } from "./Chat";
 
 @Entity()
 export class User {
@@ -20,6 +21,9 @@ export class User {
     @OneToOne(() => UserProfile, userProfile => userProfile.user)
     @JoinColumn()
     userProfile: Relation<UserProfile>; 
+
+    @OneToMany(() => Chat, chat => chat.startBy)
+    chats: Chat[];
 }
 
 @Entity()
