@@ -19,6 +19,19 @@ class UserController {
         return await this.userRepo.findOneBy({ id: id });
     }
 
+    //Method to get user by email & password
+    getUserByEmailAndPassword = async (email: string, hashedPassword: string): Promise<User | undefined> => {
+        try {
+            const user = await this.userRepo.findOne({
+                where: { email: email, hashedPassword: hashedPassword },
+            });
+            return user;
+        } catch (err) {
+            console.error(err);
+            return undefined;
+        }
+    }
+
     // Method to create a new user 
     createUser = async (user: User): Promise<boolean> => {
         try {
