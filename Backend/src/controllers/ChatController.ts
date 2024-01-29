@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Chat } from "../entities/Chat";
+import { User } from "../entities/User";
 
 class ChatController {
     chatRepo: Repository<Chat>;
@@ -12,6 +13,15 @@ class ChatController {
     // Method to get all chats
     getAllChats = async (): Promise<Chat[]> => {
         return await this.chatRepo.find();
+    }
+
+    // Method to get all chats of a specific user
+    getAllChatsOfUser = async (userId: number): Promise<Chat[]> => {
+        const user = await AppDataSource.getRepository(User).findOneBy({ id: userId });
+        if (!user) {
+            return [];
+        }
+        return await this.chatRepo.findBy({ startBy: user });
     }
 
     // Method to get a specific chat by ID

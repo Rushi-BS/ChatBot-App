@@ -11,6 +11,7 @@ class UserActions {
 
     // Sign in user
     signIn(req: Request, res: Response): void {
+
         const { email, password } = req.body;
 
         this.userController.getUserByEmailAndPassword(email, password)
@@ -25,6 +26,7 @@ class UserActions {
                 console.error(error);
                 res.status(500).json({ message: "Internal server error" });
             });
+
     }
 
     // Sign up user
@@ -65,6 +67,7 @@ class UserActions {
     }
 
     // Delete user account
+
     deleteAccount(req: Request, res: Response): void {
         const userId = parseInt(req.params.id);
 
@@ -80,7 +83,7 @@ class UserActions {
                 console.error(error);
                 res.status(500).json({ message: "Internal server error" });
             });
-    }
+
 }
 
 export default UserActions;
