@@ -17,7 +17,7 @@ let Agent = class Agent {
 exports.Agent = Agent;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Agent.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

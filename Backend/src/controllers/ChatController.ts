@@ -16,7 +16,7 @@ class ChatController {
     }
 
     // Method to get all chats of a specific user
-    getAllChatsOfUser = async (userId: number): Promise<Chat[]> => {
+    getAllChatsOfUser = async (userId: string): Promise<Chat[]> => {
         const user = await AppDataSource.getRepository(User).findOneBy({ id: userId });
         if (!user) {
             return [];
@@ -25,7 +25,7 @@ class ChatController {
     }
 
     // Method to get a specific chat by ID
-    getChatById = async (chatId: number): Promise<Chat> => {
+    getChatById = async (chatId: string): Promise<Chat> => {
         return await this.chatRepo.findOneBy({ id: chatId });
     }
 
@@ -42,7 +42,7 @@ class ChatController {
     }
 
     // Method to update an existing chat
-    updateChat = async (chatId: number, chatDataToUpdate: Chat): Promise<boolean> => {
+    updateChat = async (chatId: string, chatDataToUpdate: Chat): Promise<boolean> => {
         try {
             const chat = await this.chatRepo.findOneBy({ id: chatId });
             if (chat) {
@@ -58,7 +58,7 @@ class ChatController {
     }
 
     // Method to delete a chat
-    deleteChat = async (chatId: number): Promise<boolean> => {
+    deleteChat = async (chatId: string): Promise<boolean> => {
         try {
             const chat = await this.chatRepo.findOneBy({ id: chatId });
             if (chat) {

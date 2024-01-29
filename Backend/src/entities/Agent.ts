@@ -4,7 +4,7 @@ import { Chat } from "./Chat";
 @Entity()
 export class Agent {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     agentName: string;

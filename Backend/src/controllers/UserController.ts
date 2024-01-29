@@ -15,7 +15,7 @@ class UserController {
     }
 
     // Method to get a user by ID (/getUserById)
-    getUserById = async (id: number): Promise<User> => {
+    getUserById = async (id: string): Promise<User> => {
         return await this.userRepo.findOneBy({ id: id });
     }
 
@@ -45,7 +45,7 @@ class UserController {
     }
 
     // Method to update a user
-    updateUser = async (id: number, userDataToUpdate: User): Promise<boolean> => {
+    updateUser = async (id: string, userDataToUpdate: User): Promise<boolean> => {
         try {
             let user = await this.userRepo.findOneBy({ id: id });
             if (user) {
@@ -61,7 +61,7 @@ class UserController {
     }
 
     // Method to delete a user
-    deleteUser = async (id: number): Promise<boolean> => {
+    deleteUser = async (id: string): Promise<boolean> => {
         try {
             let user = await this.userRepo.findOneBy({ id: id });
             if (user) {

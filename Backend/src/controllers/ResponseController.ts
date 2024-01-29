@@ -15,7 +15,7 @@ class ResponseController {
     }
 
     // Method to get a response by ID
-    getResponseById = async (responseId: number): Promise<Response> => {
+    getResponseById = async (responseId: string): Promise<Response> => {
         return await this.responseRepo.findOneBy({ id: responseId});
     }
 
@@ -32,7 +32,7 @@ class ResponseController {
     }
 
     // Method to update an existing response
-    updateResponse = async (responseId: number, responseDataToUpdate: Response): Promise<boolean> => {
+    updateResponse = async (responseId: string, responseDataToUpdate: Response): Promise<boolean> => {
         try {
             const response = await this.responseRepo.findOneBy({ id: responseId});
             if (response) {
@@ -48,7 +48,7 @@ class ResponseController {
     }
 
     // Method to delete a response
-    deleteResponse = async (responseId: number): Promise<boolean> => {
+    deleteResponse = async (responseId: string): Promise<boolean> => {
         try {
             const response = await this.responseRepo.findOneBy({ id: responseId});
             if (response) {

@@ -12,20 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Response = exports.Query = exports.Chat = void 0;
 const typeorm_1 = require("typeorm");
 const Agent_1 = require("./Agent");
+const User_1 = require("./User");
 let Chat = class Chat {
 };
 exports.Chat = Chat;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Chat.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Chat.prototype, "chatName", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    (0, typeorm_1.ManyToOne)(() => User_1.User, user => user.chats),
+    __metadata("design:type", User_1.User)
 ], Chat.prototype, "startBy", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -67,7 +68,7 @@ let Query = class Query {
 exports.Query = Query;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Query.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -89,7 +90,7 @@ let Response = class Response {
 exports.Response = Response;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], Response.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

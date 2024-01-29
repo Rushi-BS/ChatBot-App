@@ -11,12 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserProfile = exports.User = void 0;
 const typeorm_1 = require("typeorm");
+const Chat_1 = require("./Chat");
 let User = class User {
 };
 exports.User = User;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
@@ -25,11 +26,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], User.prototype, "passwordHash", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], User.prototype, "salt", void 0);
+], User.prototype, "hashedPassword", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Date)
@@ -43,6 +40,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)(),
     __metadata("design:type", Object)
 ], User.prototype, "userProfile", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Chat_1.Chat, chat => chat.startBy),
+    __metadata("design:type", Array)
+], User.prototype, "chats", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);
@@ -51,7 +52,7 @@ let UserProfile = class UserProfile {
 exports.UserProfile = UserProfile;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], UserProfile.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),

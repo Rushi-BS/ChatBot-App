@@ -15,7 +15,7 @@ class AgentController {
     }
 
     // Method to get an agent by ID
-    getAgentById = async (agentId: number): Promise<Agent> => {
+    getAgentById = async (agentId: string): Promise<Agent> => {
         return await this.agentRepo.findOneBy({ id: agentId });
     }
 
@@ -32,7 +32,7 @@ class AgentController {
     }
 
     // Method to update an existing agent
-    updateAgent = async (agentId: number, agentDataToUpdate: Agent): Promise<boolean> => {
+    updateAgent = async (agentId: string, agentDataToUpdate: Agent): Promise<boolean> => {
         try {
             const agent = await this.agentRepo.findOneBy({ id: agentId});
             if (agent) {
@@ -48,7 +48,7 @@ class AgentController {
     }
 
     // Method to delete an agent
-    deleteAgent = async (agentId: number): Promise<boolean> => {
+    deleteAgent = async (agentId: string): Promise<boolean> => {
         try {
             const agent = await this.agentRepo.findOneBy({ id: agentId});
             if (agent) {

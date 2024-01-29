@@ -4,7 +4,7 @@ import { Chat } from "./Chat";
 @Entity()
 export class User {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     email: string;
@@ -29,7 +29,7 @@ export class User {
 @Entity()
 export class UserProfile {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     userName: string;

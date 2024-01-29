@@ -15,7 +15,7 @@ class QueryController {
     }
 
     // Method to get a query by ID
-    getQueryById = async (queryId: number): Promise<Query> => {
+    getQueryById = async (queryId: string): Promise<Query> => {
         return await this.queryRepo.findOneBy({id: queryId});
     }
 
@@ -32,7 +32,7 @@ class QueryController {
     }
 
     // Method to update an existing query
-    updateQuery = async (queryId: number, queryDataToUpdate: Query): Promise<boolean> => {
+    updateQuery = async (queryId: string, queryDataToUpdate: Query): Promise<boolean> => {
         try {
             const query = await this.queryRepo.findOneBy({id: queryId});
             if (query) {
@@ -48,7 +48,7 @@ class QueryController {
     }
 
     // Method to delete a query
-    deleteQuery = async (queryId: number): Promise<boolean> => {
+    deleteQuery = async (queryId: string): Promise<boolean> => {
         try {
             const query = await this.queryRepo.findOneBy({id: queryId});
             if (query) {

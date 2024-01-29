@@ -5,7 +5,7 @@ import { User } from "./User";
 @Entity()
 export class Chat {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     chatName: string;
@@ -41,7 +41,7 @@ export class Chat {
 @Entity()
 export class Query {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     text: string;
@@ -55,11 +55,8 @@ export class Query {
 
 @Entity()
 export class Response {
-    status(arg0: number) {
-        throw new Error("Method not implemented.");
-    }
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     text: string;

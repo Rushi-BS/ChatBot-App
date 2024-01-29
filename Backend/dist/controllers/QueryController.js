@@ -10,21 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
-const User_1 = require("../entities/User");
-class UserController {
+const Chat_1 = require("../entities/Chat");
+class QueryController {
     constructor() {
-        // Method to get all users (/getAllUsers)
-        this.getAllUsers = () => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepo.find();
+        // Method to get all queries
+        this.getAllQueries = () => __awaiter(this, void 0, void 0, function* () {
+            return yield this.queryRepo.find();
         });
-        // Method to get a user by ID (/getUserById)
-        this.getUserById = (id) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepo.findOneBy({ id: id });
+        // Method to get a query by ID
+        this.getQueryById = (queryId) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.queryRepo.findOneBy({ id: queryId });
         });
-        // Method to create a new user 
-        this.createUser = (user) => __awaiter(this, void 0, void 0, function* () {
+        // Method to create a new query
+        this.createQuery = (queryData) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.userRepo.save(user);
+                yield this.queryRepo.save(queryData);
                 return true;
             }
             catch (err) {
@@ -32,12 +32,12 @@ class UserController {
                 return false;
             }
         });
-        // Method to update a user
-        this.updateUser = (id, userDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
+        // Method to update an existing query
+        this.updateQuery = (queryId, queryDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let user = yield this.userRepo.findOneBy({ id: id });
-                if (user) {
-                    yield this.userRepo.update(id, userDataToUpdate);
+                const query = yield this.queryRepo.findOneBy({ id: queryId });
+                if (query) {
+                    yield this.queryRepo.update(queryId, queryDataToUpdate);
                     return true;
                 }
                 return false;
@@ -47,13 +47,12 @@ class UserController {
                 return false;
             }
         });
-        // Method to delete a user
-        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
+        // Method to delete a query
+        this.deleteQuery = (queryId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let user = yield this.userRepo.findOneBy({ id: id });
-                if (user) {
-                    user.isActive = false;
-                    yield this.userRepo.save(user);
+                const query = yield this.queryRepo.findOneBy({ id: queryId });
+                if (query) {
+                    yield this.queryRepo.remove(query);
                     return true;
                 }
                 return false;
@@ -63,7 +62,7 @@ class UserController {
                 return false;
             }
         });
-        this.userRepo = data_source_1.AppDataSource.getRepository(User_1.User);
+        this.queryRepo = data_source_1.AppDataSource.getRepository(Chat_1.Query);
     }
 }
-exports.default = UserController;
+exports.default = QueryController;

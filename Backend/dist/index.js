@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const dotenv_1 = require("dotenv");
 const data_source_1 = require("./data-source");
-(0, dotenv_1.config)();
+const config_1 = __importDefault(require("./config"));
+const routes_1 = __importDefault(require("./routes"));
 const app = (0, express_1.default)();
-const port = process.env.PORT || 3000;
+const { port } = config_1.default;
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Database connection
@@ -17,9 +17,14 @@ data_source_1.AppDataSource.initialize().then(() => {
 }).catch((err) => {
     console.log(err);
 });
+// Routes
+routes_1.default.forEach((route) => {
+    // console.log(`Route ${[route.method]} ${route.route}`);
+    app[route.method](route.route, route.action);
+});
 app.get('/', (req, res) => {
     res.send('Hello, world!');
 });
-app.listen(port, () => {
+app.listen(port || 3000, () => {
     console.log(`Server is running on port ${port}`);
 });

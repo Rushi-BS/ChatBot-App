@@ -10,21 +10,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
-const User_1 = require("../entities/User");
-class UserController {
+const Chat_1 = require("../entities/Chat");
+class ResponseController {
     constructor() {
-        // Method to get all users (/getAllUsers)
-        this.getAllUsers = () => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepo.find();
+        // Method to get all responses
+        this.getAllResponses = () => __awaiter(this, void 0, void 0, function* () {
+            return yield this.responseRepo.find();
         });
-        // Method to get a user by ID (/getUserById)
-        this.getUserById = (id) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepo.findOneBy({ id: id });
+        // Method to get a response by ID
+        this.getResponseById = (responseId) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.responseRepo.findOneBy({ id: responseId });
         });
-        // Method to create a new user 
-        this.createUser = (user) => __awaiter(this, void 0, void 0, function* () {
+        // Method to create a new response
+        this.createResponse = (responseData) => __awaiter(this, void 0, void 0, function* () {
             try {
-                yield this.userRepo.save(user);
+                yield this.responseRepo.save(responseData);
                 return true;
             }
             catch (err) {
@@ -32,12 +32,12 @@ class UserController {
                 return false;
             }
         });
-        // Method to update a user
-        this.updateUser = (id, userDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
+        // Method to update an existing response
+        this.updateResponse = (responseId, responseDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let user = yield this.userRepo.findOneBy({ id: id });
-                if (user) {
-                    yield this.userRepo.update(id, userDataToUpdate);
+                const response = yield this.responseRepo.findOneBy({ id: responseId });
+                if (response) {
+                    yield this.responseRepo.update(responseId, responseDataToUpdate);
                     return true;
                 }
                 return false;
@@ -47,13 +47,12 @@ class UserController {
                 return false;
             }
         });
-        // Method to delete a user
-        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
+        // Method to delete a response
+        this.deleteResponse = (responseId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let user = yield this.userRepo.findOneBy({ id: id });
-                if (user) {
-                    user.isActive = false;
-                    yield this.userRepo.save(user);
+                const response = yield this.responseRepo.findOneBy({ id: responseId });
+                if (response) {
+                    yield this.responseRepo.remove(response);
                     return true;
                 }
                 return false;
@@ -63,7 +62,7 @@ class UserController {
                 return false;
             }
         });
-        this.userRepo = data_source_1.AppDataSource.getRepository(User_1.User);
+        this.responseRepo = data_source_1.AppDataSource.getRepository(Chat_1.Response);
     }
 }
-exports.default = UserController;
+exports.default = ResponseController;

@@ -11,11 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
 const Chat_1 = require("../entities/Chat");
+const User_1 = require("../entities/User");
 class ChatController {
     constructor() {
         // Method to get all chats
         this.getAllChats = () => __awaiter(this, void 0, void 0, function* () {
             return yield this.chatRepo.find();
+        });
+        // Method to get all chats of a specific user
+        this.getAllChatsOfUser = (userId) => __awaiter(this, void 0, void 0, function* () {
+            const user = yield data_source_1.AppDataSource.getRepository(User_1.User).findOneBy({ id: userId });
+            if (!user) {
+                return [];
+            }
+            return yield this.chatRepo.findBy({ startBy: user });
         });
         // Method to get a specific chat by ID
         this.getChatById = (chatId) => __awaiter(this, void 0, void 0, function* () {
@@ -35,7 +44,7 @@ class ChatController {
         // Method to update an existing chat
         this.updateChat = (chatId, chatDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let chat = yield this.chatRepo.findOneBy({ id: chatId });
+                const chat = yield this.chatRepo.findOneBy({ id: chatId });
                 if (chat) {
                     yield this.chatRepo.update(chatId, chatDataToUpdate);
                     return true;
@@ -50,9 +59,10 @@ class ChatController {
         // Method to delete a chat
         this.deleteChat = (chatId) => __awaiter(this, void 0, void 0, function* () {
             try {
-                let chat = yield this.chatRepo.findOneBy({ id: chatId });
+                const chat = yield this.chatRepo.findOneBy({ id: chatId });
                 if (chat) {
                     chat.isDeleted = true;
+                    yield this.chatRepo.save(chat);
                     return true;
                 }
                 return false;
