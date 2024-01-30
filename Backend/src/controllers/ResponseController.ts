@@ -2,27 +2,23 @@ import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Response } from "../entities/Chat";
 
+const responseRepo: Repository<Response> = AppDataSource.getRepository(Response);
+
 class ResponseController {
-    responseRepo: Repository<Response>;
-
-    constructor() {
-        this.responseRepo = AppDataSource.getRepository(Response);
-    }
-
     // Method to get all responses
-    getAllResponses = async (): Promise<Response[]> => {
-        return await this.responseRepo.find();
+    static getAllResponses = async (): Promise<Response[]> => {
+        return await responseRepo.find();
     }
 
     // Method to get a response by ID
-    getResponseById = async (responseId: string): Promise<Response> => {
-        return await this.responseRepo.findOneBy({ id: responseId});
+    static getResponseById = async (responseId: string): Promise<Response> => {
+        return await responseRepo.findOneBy({ id: responseId});
     }
 
     // Method to create a new response
-    createResponse = async (responseData: Response): Promise<boolean> => {
+    static createResponse = async (responseData: Response): Promise<boolean> => {
         try {
-            await this.responseRepo.save(responseData);
+            await responseRepo.save(responseData);
             return true;
         }
         catch (err) {
@@ -32,11 +28,11 @@ class ResponseController {
     }
 
     // Method to update an existing response
-    updateResponse = async (responseId: string, responseDataToUpdate: Response): Promise<boolean> => {
+    static updateResponse = async (responseId: string, responseDataToUpdate: Response): Promise<boolean> => {
         try {
-            const response = await this.responseRepo.findOneBy({ id: responseId});
+            const response = await responseRepo.findOneBy({ id: responseId});
             if (response) {
-                await this.responseRepo.update(responseId, responseDataToUpdate);
+                await responseRepo.update(responseId, responseDataToUpdate);
                 return true;
             }
             return false;
@@ -48,11 +44,11 @@ class ResponseController {
     }
 
     // Method to delete a response
-    deleteResponse = async (responseId: string): Promise<boolean> => {
+    static deleteResponse = async (responseId: string): Promise<boolean> => {
         try {
-            const response = await this.responseRepo.findOneBy({ id: responseId});
+            const response = await responseRepo.findOneBy({ id: responseId});
             if (response) {
-                await this.responseRepo.remove(response);
+                await responseRepo.remove(response);
                 return true;
             }
             return false;

@@ -8,71 +8,71 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
 const Chat_1 = require("../entities/Chat");
 const User_1 = require("../entities/User");
+const chatRepo = data_source_1.AppDataSource.getRepository(Chat_1.Chat);
 class ChatController {
-    constructor() {
-        // Method to get all chats
-        this.getAllChats = () => __awaiter(this, void 0, void 0, function* () {
-            return yield this.chatRepo.find();
-        });
-        // Method to get all chats of a specific user
-        this.getAllChatsOfUser = (userId) => __awaiter(this, void 0, void 0, function* () {
-            const user = yield data_source_1.AppDataSource.getRepository(User_1.User).findOneBy({ id: userId });
-            if (!user) {
-                return [];
-            }
-            return yield this.chatRepo.findBy({ startBy: user });
-        });
-        // Method to get a specific chat by ID
-        this.getChatById = (chatId) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.chatRepo.findOneBy({ id: chatId });
-        });
-        // Method to create a new chat
-        this.createChat = (chatData) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.chatRepo.save(chatData);
-                return true;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to update an existing chat
-        this.updateChat = (chatId, chatDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const chat = yield this.chatRepo.findOneBy({ id: chatId });
-                if (chat) {
-                    yield this.chatRepo.update(chatId, chatDataToUpdate);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to delete a chat
-        this.deleteChat = (chatId) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const chat = yield this.chatRepo.findOneBy({ id: chatId });
-                if (chat) {
-                    chat.isDeleted = true;
-                    yield this.chatRepo.save(chat);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        this.chatRepo = data_source_1.AppDataSource.getRepository(Chat_1.Chat);
-    }
 }
+_a = ChatController;
+// Method to get all chats
+ChatController.getAllChats = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield chatRepo.find();
+});
+// Method to get all chats of a specific user
+ChatController.getAllChatsOfUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield data_source_1.AppDataSource.getRepository(User_1.User).findOneBy({ id: userId });
+    if (!user) {
+        return [];
+    }
+    return yield chatRepo.findBy({ startBy: user });
+});
+// Method to get a specific chat by ID
+ChatController.getChatById = (chatId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield chatRepo.findOneBy({ id: chatId });
+});
+// Method to create a new chat
+ChatController.createChat = (chatData) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield chatRepo.save(chatData);
+        return true;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to update an existing chat
+ChatController.updateChat = (chatId, chatDataToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const chat = yield chatRepo.findOneBy({ id: chatId });
+        if (chat) {
+            yield chatRepo.update(chatId, chatDataToUpdate);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to delete a chat
+ChatController.deleteChat = (chatId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const chat = yield chatRepo.findOneBy({ id: chatId });
+        if (chat) {
+            chat.isDeleted = true;
+            yield chatRepo.save(chat);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
 exports.default = ChatController;

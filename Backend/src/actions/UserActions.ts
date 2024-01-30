@@ -3,18 +3,11 @@ import UserController from "../controllers/UserController";
 import { User } from "../entities/User";
 
 class UserActions {
-    private userController: UserController;
-
-    constructor() {
-        this.userController = new UserController();
-    }
-
     // Sign in user
-    signIn(req: Request, res: Response): void {
-
+    static signIn(req: Request, res: Response): void {
         const { email, password } = req.body;
 
-        this.userController.getUserByEmailAndPassword(email, password)
+        UserController.getUserByEmailAndPassword(email, password)
             .then((user) => {
                 if (user) {
                     res.status(200).json({ message: "Sign in successful", user });
@@ -30,10 +23,16 @@ class UserActions {
     }
 
     // Sign up user
-    signUp(req: Request, res: Response): void {
-        const userData: User = req.body;
+    static signUp(req: Request, res: Response): void {
+        const { email, hashedPassword } = req.body;
 
-        this.userController.createUser(userData)
+        const userData = new User();
+        userData.email = email;
+        userData.hashedPassword = hashedPassword;
+        userData.createdAt = new Date();
+        userData.isActive = true;
+
+        UserController.createUser(userData)
             .then((success) => {
                 if (success) {
                     res.status(201).json({ message: "Sign up successful" });
@@ -47,12 +46,13 @@ class UserActions {
             });
     }
 
+    // TODO: Check update logic
     // Update user profile
-    updateProfile(req: Request, res: Response): void {
-        const userId = parseInt(req.params.id);
+    static updateProfile(req: Request, res: Response): void {
+        const userId = req.params.id;
         const updatedUserData = req.body;
 
-        this.userController.updateUser(userId, updatedUserData)
+        UserController.updateUser(userId, updatedUserData)
             .then((success) => {
                 if (success) {
                     res.status(200).json({ message: "Profile updated successfully" });
@@ -67,11 +67,10 @@ class UserActions {
     }
 
     // Delete user account
+    static deleteAccount(req: Request, res: Response): void {
+        const userId = req.params.userId;
 
-    deleteAccount(req: Request, res: Response): void {
-        const userId = parseInt(req.params.id);
-
-        this.userController.deleteUser(userId)
+        UserController.deleteUser(userId)
             .then((success) => {
                 if (success) {
                     res.status(200).json({ message: "Account deleted successfully" });
@@ -84,6 +83,7 @@ class UserActions {
                 res.status(500).json({ message: "Internal server error" });
             });
 
+    }
 }
 
 export default UserActions;

@@ -2,27 +2,23 @@ import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Query } from "../entities/Chat";
 
+const queryRepo: Repository<Query> = AppDataSource.getRepository(Query);
+
 class QueryController {
-    queryRepo: Repository<Query>;
-
-    constructor() {
-        this.queryRepo = AppDataSource.getRepository(Query);
-    }
-
     // Method to get all queries
-    getAllQueries = async (): Promise<Query[]> => {
-        return await this.queryRepo.find();
+    static getAllQueries = async (): Promise<Query[]> => {
+        return await queryRepo.find();
     }
 
     // Method to get a query by ID
-    getQueryById = async (queryId: string): Promise<Query> => {
-        return await this.queryRepo.findOneBy({id: queryId});
+    static getQueryById = async (queryId: string): Promise<Query> => {
+        return await queryRepo.findOneBy({id: queryId});
     }
 
     // Method to create a new query
-    createQuery = async (queryData: Query): Promise<boolean> => {
+    static createQuery = async (queryData: Query): Promise<boolean> => {
         try {
-            await this.queryRepo.save(queryData);
+            await queryRepo.save(queryData);
             return true;
         }
         catch (err) {
@@ -32,11 +28,11 @@ class QueryController {
     }
 
     // Method to update an existing query
-    updateQuery = async (queryId: string, queryDataToUpdate: Query): Promise<boolean> => {
+    static updateQuery = async (queryId: string, queryDataToUpdate: Query): Promise<boolean> => {
         try {
-            const query = await this.queryRepo.findOneBy({id: queryId});
+            const query = await queryRepo.findOneBy({id: queryId});
             if (query) {
-                await this.queryRepo.update(queryId, queryDataToUpdate);
+                await queryRepo.update(queryId, queryDataToUpdate);
                 return true;
             }
             return false;
@@ -48,11 +44,11 @@ class QueryController {
     }
 
     // Method to delete a query
-    deleteQuery = async (queryId: string): Promise<boolean> => {
+    static deleteQuery = async (queryId: string): Promise<boolean> => {
         try {
-            const query = await this.queryRepo.findOneBy({id: queryId});
+            const query = await queryRepo.findOneBy({id: queryId});
             if (query) {
-                await this.queryRepo.remove(query);
+                await queryRepo.remove(query);
                 return true;
             }
             return false;

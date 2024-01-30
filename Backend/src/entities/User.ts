@@ -22,7 +22,7 @@ export class User {
     @JoinColumn()
     userProfile: Relation<UserProfile>; 
 
-    @OneToMany(() => Chat, chat => chat.startBy)
+    @OneToMany(() => Chat, (chat) => chat.startBy)
     chats: Chat[];
 }
 

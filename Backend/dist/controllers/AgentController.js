@@ -8,61 +8,61 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
 const Agent_1 = require("../entities/Agent");
+const agentRepo = data_source_1.AppDataSource.getRepository(Agent_1.Agent);
 class AgentController {
-    constructor() {
-        // Method to get all agents
-        this.getAllAgents = () => __awaiter(this, void 0, void 0, function* () {
-            return yield this.agentRepo.find();
-        });
-        // Method to get an agent by ID
-        this.getAgentById = (agentId) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.agentRepo.findOneBy({ id: agentId });
-        });
-        // Method to create a new agent
-        this.createAgent = (agentData) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.agentRepo.save(agentData);
-                return true;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to update an existing agent
-        this.updateAgent = (agentId, agentDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const agent = yield this.agentRepo.findOneBy({ id: agentId });
-                if (agent) {
-                    yield this.agentRepo.update(agentId, agentDataToUpdate);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to delete an agent
-        this.deleteAgent = (agentId) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const agent = yield this.agentRepo.findOneBy({ id: agentId });
-                if (agent) {
-                    yield this.agentRepo.remove(agent);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        this.agentRepo = data_source_1.AppDataSource.getRepository(Agent_1.Agent);
-    }
 }
+_a = AgentController;
+// Method to get all agents
+AgentController.getAllAgents = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield agentRepo.find();
+});
+// Method to get an agent by ID
+AgentController.getAgentById = (agentId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield agentRepo.findOneBy({ id: agentId });
+});
+// Method to create a new agent
+AgentController.createAgent = (agentData) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield agentRepo.save(agentData);
+        return true;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to update an existing agent
+AgentController.updateAgent = (agentId, agentDataToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const agent = yield agentRepo.findOneBy({ id: agentId });
+        if (agent) {
+            yield agentRepo.update(agentId, agentDataToUpdate);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to delete an agent
+AgentController.deleteAgent = (agentId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const agent = yield agentRepo.findOneBy({ id: agentId });
+        if (agent) {
+            yield agentRepo.remove(agent);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
 exports.default = AgentController;

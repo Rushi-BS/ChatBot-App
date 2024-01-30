@@ -8,61 +8,61 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
 const Chat_1 = require("../entities/Chat");
+const queryRepo = data_source_1.AppDataSource.getRepository(Chat_1.Query);
 class QueryController {
-    constructor() {
-        // Method to get all queries
-        this.getAllQueries = () => __awaiter(this, void 0, void 0, function* () {
-            return yield this.queryRepo.find();
-        });
-        // Method to get a query by ID
-        this.getQueryById = (queryId) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.queryRepo.findOneBy({ id: queryId });
-        });
-        // Method to create a new query
-        this.createQuery = (queryData) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.queryRepo.save(queryData);
-                return true;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to update an existing query
-        this.updateQuery = (queryId, queryDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const query = yield this.queryRepo.findOneBy({ id: queryId });
-                if (query) {
-                    yield this.queryRepo.update(queryId, queryDataToUpdate);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to delete a query
-        this.deleteQuery = (queryId) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                const query = yield this.queryRepo.findOneBy({ id: queryId });
-                if (query) {
-                    yield this.queryRepo.remove(query);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        this.queryRepo = data_source_1.AppDataSource.getRepository(Chat_1.Query);
-    }
 }
+_a = QueryController;
+// Method to get all queries
+QueryController.getAllQueries = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield queryRepo.find();
+});
+// Method to get a query by ID
+QueryController.getQueryById = (queryId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield queryRepo.findOneBy({ id: queryId });
+});
+// Method to create a new query
+QueryController.createQuery = (queryData) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield queryRepo.save(queryData);
+        return true;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to update an existing query
+QueryController.updateQuery = (queryId, queryDataToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const query = yield queryRepo.findOneBy({ id: queryId });
+        if (query) {
+            yield queryRepo.update(queryId, queryDataToUpdate);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to delete a query
+QueryController.deleteQuery = (queryId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const query = yield queryRepo.findOneBy({ id: queryId });
+        if (query) {
+            yield queryRepo.remove(query);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
 exports.default = QueryController;

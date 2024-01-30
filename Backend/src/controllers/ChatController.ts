@@ -3,36 +3,32 @@ import { AppDataSource } from "../data-source";
 import { Chat } from "../entities/Chat";
 import { User } from "../entities/User";
 
+const chatRepo: Repository<Chat> = AppDataSource.getRepository(Chat);
+
 class ChatController {
-    chatRepo: Repository<Chat>;
-
-    constructor() {
-        this.chatRepo = AppDataSource.getRepository(Chat);
-    }
-
     // Method to get all chats
-    getAllChats = async (): Promise<Chat[]> => {
-        return await this.chatRepo.find();
+    static getAllChats = async (): Promise<Chat[]> => {
+        return await chatRepo.find();
     }
 
     // Method to get all chats of a specific user
-    getAllChatsOfUser = async (userId: string): Promise<Chat[]> => {
+    static getAllChatsOfUser = async (userId: string): Promise<Chat[]> => {
         const user = await AppDataSource.getRepository(User).findOneBy({ id: userId });
         if (!user) {
             return [];
         }
-        return await this.chatRepo.findBy({ startBy: user });
+        return await chatRepo.findBy({ startBy: user });
     }
 
     // Method to get a specific chat by ID
-    getChatById = async (chatId: string): Promise<Chat> => {
-        return await this.chatRepo.findOneBy({ id: chatId });
+    static getChatById = async (chatId: string): Promise<Chat> => {
+        return await chatRepo.findOneBy({ id: chatId });
     }
 
     // Method to create a new chat
-    createChat = async (chatData: Chat): Promise<boolean> => {
+    static createChat = async (chatData: Chat): Promise<boolean> => {
         try {
-            await this.chatRepo.save(chatData);
+            await chatRepo.save(chatData);
             return true;
         }
         catch (err) {       
@@ -42,11 +38,11 @@ class ChatController {
     }
 
     // Method to update an existing chat
-    updateChat = async (chatId: string, chatDataToUpdate: Chat): Promise<boolean> => {
+    static updateChat = async (chatId: string, chatDataToUpdate: Chat): Promise<boolean> => {
         try {
-            const chat = await this.chatRepo.findOneBy({ id: chatId });
+            const chat = await chatRepo.findOneBy({ id: chatId });
             if (chat) {
-                await this.chatRepo.update(chatId, chatDataToUpdate);
+                await chatRepo.update(chatId, chatDataToUpdate);
                 return true;
             }
             return false;
@@ -58,12 +54,12 @@ class ChatController {
     }
 
     // Method to delete a chat
-    deleteChat = async (chatId: string): Promise<boolean> => {
+    static deleteChat = async (chatId: string): Promise<boolean> => {
         try {
-            const chat = await this.chatRepo.findOneBy({ id: chatId });
+            const chat = await chatRepo.findOneBy({ id: chatId });
             if (chat) {
                 chat.isDeleted = true;
-                await this.chatRepo.save(chat);
+                await chatRepo.save(chat);
                 return true;
             }
             return false;

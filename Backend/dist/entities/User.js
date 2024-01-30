@@ -41,7 +41,7 @@ __decorate([
     __metadata("design:type", Object)
 ], User.prototype, "userProfile", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Chat_1.Chat, chat => chat.startBy),
+    (0, typeorm_1.OneToMany)(() => Chat_1.Chat, (chat) => chat.startBy),
     __metadata("design:type", Array)
 ], User.prototype, "chats", void 0);
 exports.User = User = __decorate([

@@ -25,27 +25,31 @@ __decorate([
     __metadata("design:type", String)
 ], Chat.prototype, "chatName", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, user => user.chats),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.chats),
     __metadata("design:type", User_1.User)
 ], Chat.prototype, "startBy", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], Chat.prototype, "isAgentPresent", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", Date)
+], Chat.prototype, "startAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", Date)
 ], Chat.prototype, "endAt", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: false }),
     __metadata("design:type", Boolean)
 ], Chat.prototype, "isDeleted", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ default: 0 }),
     __metadata("design:type", Number)
 ], Chat.prototype, "rating", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], Chat.prototype, "feedback", void 0);
 __decorate([
@@ -93,7 +97,7 @@ __decorate([
     __metadata("design:type", String)
 ], Response.prototype, "id", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({ type: 'text' }),
     __metadata("design:type", String)
 ], Response.prototype, "text", void 0);
 __decorate([

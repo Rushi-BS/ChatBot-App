@@ -10,22 +10,25 @@ export class Chat {
     @Column()
     chatName: string;
 
-    @ManyToOne(() => User, user => user.chats)
+    @ManyToOne(() => User, (user) => user.chats)
     startBy: User;
 
-    @Column()
+    @Column({ default: false })
     isAgentPresent: boolean;
 
     @Column()
+    startAt: Date;
+
+    @Column({ nullable: true })
     endAt: Date;
 
-    @Column()
+    @Column({ default: false })
     isDeleted: boolean;
 
-    @Column()
+    @Column({ default: 0 })
     rating: number;
 
-    @Column()
+    @Column({ nullable: true })
     feedback: string;
 
     @OneToMany(() => Query, query => query.chat)
@@ -58,7 +61,7 @@ export class Response {
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column()
+    @Column({ type: 'text'})
     text: string;
 
     @Column()

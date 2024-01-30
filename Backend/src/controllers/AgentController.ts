@@ -2,27 +2,23 @@ import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { Agent } from "../entities/Agent";
 
+const agentRepo: Repository<Agent> = AppDataSource.getRepository(Agent);
+
 class AgentController {
-    agentRepo: Repository<Agent>;
-
-    constructor() {
-        this.agentRepo = AppDataSource.getRepository(Agent);
-    }
-
     // Method to get all agents
-    getAllAgents = async (): Promise<Agent[]> => {
-        return await this.agentRepo.find();
+    static getAllAgents = async (): Promise<Agent[]> => {
+        return await agentRepo.find();
     }
 
     // Method to get an agent by ID
-    getAgentById = async (agentId: string): Promise<Agent> => {
-        return await this.agentRepo.findOneBy({ id: agentId });
+    static getAgentById = async (agentId: string): Promise<Agent> => {
+        return await agentRepo.findOneBy({ id: agentId });
     }
 
     // Method to create a new agent
-    createAgent = async (agentData: Agent): Promise<boolean> => {
+    static createAgent = async (agentData: Agent): Promise<boolean> => {
         try {
-            await this.agentRepo.save(agentData);
+            await agentRepo.save(agentData);
             return true;
         }
         catch (err) {
@@ -32,11 +28,11 @@ class AgentController {
     }
 
     // Method to update an existing agent
-    updateAgent = async (agentId: string, agentDataToUpdate: Agent): Promise<boolean> => {
+    static updateAgent = async (agentId: string, agentDataToUpdate: Agent): Promise<boolean> => {
         try {
-            const agent = await this.agentRepo.findOneBy({ id: agentId});
+            const agent = await agentRepo.findOneBy({ id: agentId});
             if (agent) {
-                await this.agentRepo.update(agentId, agentDataToUpdate);
+                await agentRepo.update(agentId, agentDataToUpdate);
                 return true;
             }
             return false;
@@ -48,11 +44,11 @@ class AgentController {
     }
 
     // Method to delete an agent
-    deleteAgent = async (agentId: string): Promise<boolean> => {
+    static deleteAgent = async (agentId: string): Promise<boolean> => {
         try {
-            const agent = await this.agentRepo.findOneBy({ id: agentId});
+            const agent = await agentRepo.findOneBy({ id: agentId});
             if (agent) {
-                await this.agentRepo.remove(agent);
+                await agentRepo.remove(agent);
                 return true;
             }
             return false;

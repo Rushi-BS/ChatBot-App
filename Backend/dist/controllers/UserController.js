@@ -8,62 +8,75 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
 const User_1 = require("../entities/User");
+const userRepo = data_source_1.AppDataSource.getRepository(User_1.User);
 class UserController {
-    constructor() {
-        // Method to get all users (/getAllUsers)
-        this.getAllUsers = () => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepo.find();
-        });
-        // Method to get a user by ID (/getUserById)
-        this.getUserById = (id) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepo.findOneBy({ id: id });
-        });
-        // Method to create a new user 
-        this.createUser = (user) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                yield this.userRepo.save(user);
-                return true;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to update a user
-        this.updateUser = (id, userDataToUpdate) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let user = yield this.userRepo.findOneBy({ id: id });
-                if (user) {
-                    yield this.userRepo.update(id, userDataToUpdate);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        // Method to delete a user
-        this.deleteUser = (id) => __awaiter(this, void 0, void 0, function* () {
-            try {
-                let user = yield this.userRepo.findOneBy({ id: id });
-                if (user) {
-                    user.isActive = false;
-                    yield this.userRepo.save(user);
-                    return true;
-                }
-                return false;
-            }
-            catch (err) {
-                console.log(err);
-                return false;
-            }
-        });
-        this.userRepo = data_source_1.AppDataSource.getRepository(User_1.User);
-    }
 }
+_a = UserController;
+// Method to get all users 
+UserController.getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+    return yield userRepo.find();
+});
+// Method to get a user by ID 
+UserController.getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield userRepo.findOneBy({ id: id });
+});
+//Method to get user by email & password
+UserController.getUserByEmailAndPassword = (email, hashedPassword) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield userRepo.findOne({
+            where: { email: email, hashedPassword: hashedPassword },
+        });
+        return user;
+    }
+    catch (err) {
+        console.error(err);
+        return undefined;
+    }
+});
+// Method to create a new user 
+UserController.createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield userRepo.save(user);
+        return true;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to update a user
+UserController.updateUser = (id, userDataToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let user = yield userRepo.findOneBy({ id: id });
+        if (user) {
+            yield userRepo.update(id, userDataToUpdate);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
+// Method to delete a user
+UserController.deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let user = yield userRepo.findOneBy({ id: id });
+        if (user) {
+            user.isActive = false;
+            yield userRepo.save(user);
+            return true;
+        }
+        return false;
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+});
 exports.default = UserController;

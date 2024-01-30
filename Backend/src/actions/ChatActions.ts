@@ -11,22 +11,13 @@ import config from "../config";
 const { openai_api_key } = config;
 
 class ChatActions {
-    private userController: UserController;
-    private chatController: ChatController;
-    private queryController: QueryController;
-    private responseController: ResponseController;
-
-    constructor() {
-        this.chatController = new ChatController();
-        this.queryController = new QueryController();
-        this.responseController = new ResponseController();
-    }
-
     // Action to start a chat
-    startChat = async (req: Req, res: Res): Promise<void> => {
+    static startChat = async (req: Req, res: Res): Promise<void> => {
         try {
             const { userId, chatName }: { userId: string, chatName: string } = req.body;
-            const user = await this.userController.getUserById(userId);
+            console.log(userId, chatName);
+            const user = await UserController.getUserById(userId);
+            console.log("User: ", user);
 
             if (!user) {
                 throw new Error("User not found");
@@ -35,9 +26,20 @@ class ChatActions {
             const chatData = new Chat();
             chatData.chatName = chatName;
             chatData.startBy = user;
-            user.chats.push(chatData);
+            chatData.startAt = new Date();
 
-            const success = await this.userController.updateUser(userId, user) && await this.chatController.createChat(chatData);
+            // const isChatCreated = await ChatController.createChat(chatData)
+
+            // if (isChatCreated && !user.chats) {
+                // user.chats = [];
+            // }
+
+            // user.chats = [...(user.chats || []), chatData];
+            console.log("updated user: ", user);
+            
+            // const success = await UserController.updateUser(userId, user);
+            const success = await ChatController.createChat(chatData);
+
             if (success) {
                 res.status(201).json({ message: "Chat started successfully" });
             } else {
@@ -52,9 +54,9 @@ class ChatActions {
     }
 
     // Action to send a query in an ongoing chat
-    sendQuery = async (req: Req, res: Res): Promise<void> => {
+    static sendQuery = async (req: Req, res: Res): Promise<void> => {
         const { chatId, queryText }: { chatId: string, queryText: string } = req.body;
-        const chat: Chat = await this.chatController.getChatById(chatId);
+        const chat: Chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
             res.status(404).json({ message: "Chat not found" });
@@ -65,9 +67,8 @@ class ChatActions {
         queryData.chat = chat;
         queryData.text = queryText;
         queryData.timestamp = new Date();
-        chat.queries.push(queryData);
 
-        const success = await this.chatController.updateChat(chatId, chat) && await this.queryController.createQuery(queryData);
+        const success = await QueryController.createQuery(queryData);
         if (success) {
             try {
                 const responseText = await this.getResponseFromBot(queryText);
@@ -79,8 +80,8 @@ class ChatActions {
                 responseData.text = responseText;
                 responseData.timestamp = new Date();
                 responseData.isBotResponse = true;
-                chat.responses.push(responseData);
-                await this.chatController.updateChat(chatId, chat) && await this.responseController.createResponse(responseData);
+
+                await ResponseController.createResponse(responseData);
                 res.status(200).json({ message: "Query sent successfully", response: responseData });
             } catch (error) {
                 console.error(error.message);
@@ -92,7 +93,7 @@ class ChatActions {
     }
 
     // Get a response to a query from a bot
-    getResponseFromBot = async (query: string): Promise<string> => {
+    static getResponseFromBot = async (query: string): Promise<string> => {
         try {
             if (!query) {
                 return;
@@ -116,6 +117,7 @@ class ChatActions {
                     content: `When I request for a help, Assume it's for customer support for our product blockCerti.`
                 }, prompt],
                 temperature: 0.2,
+                max_tokens: 150,
             });
 
             return completion.choices[0].message.content;
@@ -127,10 +129,10 @@ class ChatActions {
     }
 
     // Action to get all past chats of a user
-    getChatsList = async (req: Req, res: Res): Promise<void> => {
+    static getChatsList = async (req: Req, res: Res): Promise<void> => {
         const { userId }: { userId: string } = req.body;
 
-        const chatsList = await this.chatController.getAllChatsOfUser(userId);
+        const chatsList = await ChatController.getAllChatsOfUser(userId);
 
         if (chatsList) {
             res.status(200).json({ chatsList });
@@ -140,16 +142,16 @@ class ChatActions {
     }
 
     // Action to delete a chat
-    deleteChat = async (req: Req, res: Res): Promise<void> => {
+    static deleteChat = async (req: Req, res: Res): Promise<void> => {
         const { chatId }: { chatId: string } = req.body;
-        const chat = await this.chatController.getChatById(chatId);
+        const chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
             res.status(404).json({ message: "Chat not found" });
             return;
         }
 
-        const success = await this.chatController.deleteChat(chatId);
+        const success = await ChatController.deleteChat(chatId);
         if (success) {
             res.status(200).json({ message: "Chat deleted successfully" });
         } else {
@@ -158,9 +160,9 @@ class ChatActions {
     }
 
     // Action to end a chat
-    endChat = async (req: Req, res: Res): Promise<void> => {
+    static endChat = async (req: Req, res: Res): Promise<void> => {
         const { chatId }: { chatId: string } = req.body;
-        const chat = await this.chatController.getChatById(chatId);
+        const chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
             res.status(404).json({ message: "Chat not found" });
@@ -169,7 +171,7 @@ class ChatActions {
 
         chat.endAt = new Date();
 
-        const success = await this.chatController.updateChat(chatId, chat);
+        const success = await ChatController.updateChat(chatId, chat);
         if (success) {
             res.status(200).json({ message: "Chat ended successfully" });
         } else {
