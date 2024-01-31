@@ -14,13 +14,19 @@ class ChatActions {
     // Action to start a chat
     static startChat = async (req: Req, res: Res): Promise<void> => {
         try {
-            const { userId, chatName }: { userId: string, chatName: string } = req.body;
-            console.log(userId, chatName);
+            const { userId } = req.params;
+            const { chatName }: { chatName: string } = req.body;
+
+            if(!userId || !chatName) {
+                res.status(400).json({ message: "Invalid request" });
+                return;
+            }
+
             const user = await UserController.getUserById(userId);
-            console.log("User: ", user);
 
             if (!user) {
-                throw new Error("User not found");
+                res.status(404).json({ message: "User not found" });
+                return;
             }
 
             const chatData = new Chat();
@@ -28,34 +34,28 @@ class ChatActions {
             chatData.startBy = user;
             chatData.startAt = new Date();
 
-            // const isChatCreated = await ChatController.createChat(chatData)
-
-            // if (isChatCreated && !user.chats) {
-                // user.chats = [];
-            // }
-
-            // user.chats = [...(user.chats || []), chatData];
-            console.log("updated user: ", user);
-            
-            // const success = await UserController.updateUser(userId, user);
+            console.log("Chatdata: ", chatData);
             const success = await ChatController.createChat(chatData);
-
             if (success) {
-                res.status(201).json({ message: "Chat started successfully" });
+                res.status(201).json({ message: "Chat started successfully", chat: chatData});
             } else {
                 res.status(500).json({ message: "Failed to start chat" });
             }
-
         } catch (error) {
             console.error(error.message);
             res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
         }
-
     }
 
     // Action to send a query in an ongoing chat
     static sendQuery = async (req: Req, res: Res): Promise<void> => {
         const { chatId, queryText }: { chatId: string, queryText: string } = req.body;
+
+        if (!chatId || !queryText) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+
         const chat: Chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
@@ -68,7 +68,7 @@ class ChatActions {
         queryData.text = queryText;
         queryData.timestamp = new Date();
 
-        const success = await QueryController.createQuery(queryData);
+        const success = await QueryController.saveQuery(queryData);
         if (success) {
             try {
                 const responseText = await this.getResponseFromBot(queryText);
@@ -79,10 +79,9 @@ class ChatActions {
                 responseData.chat = chat;
                 responseData.text = responseText;
                 responseData.timestamp = new Date();
-                responseData.isBotResponse = true;
 
-                await ResponseController.createResponse(responseData);
-                res.status(200).json({ message: "Query sent successfully", response: responseData });
+                await ResponseController.saveResponse(responseData);
+                res.status(200).json({ message: "Received response successfully", query: queryData, responseData: responseData });
             } catch (error) {
                 console.error(error.message);
                 res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
@@ -114,7 +113,7 @@ class ChatActions {
                 model: "gpt-3.5-turbo",
                 messages: [{
                     role: "system",
-                    content: `When I request for a help, Assume it's for customer support for our product blockCerti.`
+                    content: `When I request for a help, Assume it's for customer support for our product blockCerti. Try to give short answer in around 30-50 words.`
                 }, prompt],
                 temperature: 0.2,
                 max_tokens: 150,
@@ -132,10 +131,15 @@ class ChatActions {
     static getChatsList = async (req: Req, res: Res): Promise<void> => {
         const { userId }: { userId: string } = req.body;
 
+        if (!userId) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+
         const chatsList = await ChatController.getAllChatsOfUser(userId);
 
         if (chatsList) {
-            res.status(200).json({ chatsList });
+            res.status(200).json({ message: "Chats list fetched successfully", chatsList: chatsList });
         } else {
             res.status(500).json({ message: "Failed to get chats list" });
         }
@@ -144,6 +148,12 @@ class ChatActions {
     // Action to delete a chat
     static deleteChat = async (req: Req, res: Res): Promise<void> => {
         const { chatId }: { chatId: string } = req.body;
+
+        if (!chatId) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+
         const chat = await ChatController.getChatById(chatId);
 
         if (!chat) {

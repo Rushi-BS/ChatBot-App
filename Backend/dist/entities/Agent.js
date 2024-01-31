@@ -35,6 +35,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => Chat_1.Chat, chat => chat.agent),
     __metadata("design:type", Array)
 ], Agent.prototype, "chats", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => Chat_1.Response, response => response.agent),
+    __metadata("design:type", Array)
+], Agent.prototype, "responses", void 0);
 exports.Agent = Agent = __decorate([
     (0, typeorm_1.Entity)()
 ], Agent);

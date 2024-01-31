@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { Chat } from "./Chat";
+import { Chat, Response } from "./Chat";
 
 @Entity()
 export class Agent {
@@ -17,4 +17,7 @@ export class Agent {
 
     @OneToMany(() => Chat, chat => chat.agent)
     chats: Chat[];
+
+    @OneToMany(() => Response, response => response.agent)
+    responses: Response[];
 }

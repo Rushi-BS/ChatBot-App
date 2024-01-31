@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], Chat.prototype, "chatName", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.chats),
+    (0, typeorm_1.ManyToOne)(() => User_1.User, (user) => user.chats, { cascade: true }),
     __metadata("design:type", User_1.User)
 ], Chat.prototype, "startBy", void 0);
 __decorate([
@@ -45,7 +45,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Chat.prototype, "isDeleted", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ default: 0 }),
+    (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", Number)
 ], Chat.prototype, "rating", void 0);
 __decorate([
@@ -83,7 +83,7 @@ __decorate([
     __metadata("design:type", Date)
 ], Query.prototype, "timestamp", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Chat, chat => chat.queries),
+    (0, typeorm_1.ManyToOne)(() => Chat, chat => chat.queries, { cascade: true }),
     __metadata("design:type", Chat)
 ], Query.prototype, "chat", void 0);
 exports.Query = Query = __decorate([
@@ -105,16 +105,12 @@ __decorate([
     __metadata("design:type", Date)
 ], Response.prototype, "timestamp", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Agent_1.Agent),
-    (0, typeorm_1.JoinColumn)(),
+    (0, typeorm_1.ManyToOne)(() => Agent_1.Agent, agent => agent.responses, { nullable: true, cascade: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'givenBy' }),
     __metadata("design:type", Agent_1.Agent)
 ], Response.prototype, "agent", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: 'boolean', nullable: true }),
-    __metadata("design:type", Boolean)
-], Response.prototype, "isBotResponse", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Chat, chat => chat.responses),
+    (0, typeorm_1.ManyToOne)(() => Chat, chat => chat.responses, { cascade: true }),
     __metadata("design:type", Chat)
 ], Response.prototype, "chat", void 0);
 exports.Response = Response = __decorate([

@@ -10,7 +10,7 @@ export class Chat {
     @Column()
     chatName: string;
 
-    @ManyToOne(() => User, (user) => user.chats)
+    @ManyToOne(() => User, (user) => user.chats, {cascade: true})
     startBy: User;
 
     @Column({ default: false })
@@ -25,7 +25,7 @@ export class Chat {
     @Column({ default: false })
     isDeleted: boolean;
 
-    @Column({ default: 0 })
+    @Column({ nullable: true })
     rating: number;
 
     @Column({ nullable: true })
@@ -52,7 +52,7 @@ export class Query {
     @Column()
     timestamp: Date;
 
-    @ManyToOne(() => Chat, chat => chat.queries)
+    @ManyToOne(() => Chat, chat => chat.queries, {cascade: true})
     chat: Chat;
 }
 
@@ -67,18 +67,11 @@ export class Response {
     @Column()
     timestamp: Date;
 
-    // @Column()
-    // givenBy: number;
-
-    // Foreign key to Agent, nullable for bot responses
-    @ManyToOne(() => Agent)
-    @JoinColumn()
+    // Foreign key to Agent, nullable for bot responses 
+    @ManyToOne(() => Agent, agent => agent.responses, {nullable: true, cascade: true})
+    @JoinColumn({ name: 'givenBy'})
     agent: Agent;
 
-    // Optional: Explicit field to indicate bot responses
-    @Column({ type: 'boolean', nullable: true })
-    isBotResponse: boolean;
-
-    @ManyToOne(() => Chat, chat => chat.responses)
+    @ManyToOne(() => Chat, chat => chat.responses, {cascade: true})
     chat: Chat;
 }
