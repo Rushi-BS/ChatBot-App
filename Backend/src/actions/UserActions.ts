@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import UserController from "../controllers/UserController";
-import { User } from "../entities/User";
+import ProfileController from "../controllers/ProfileController"
+import { User, UserProfile } from "../entities/User";
 
 class UserActions {
     // Sign in user
@@ -48,11 +49,17 @@ class UserActions {
 
     // TODO: Check update logic
     // Update user profile
-    static updateProfile(req: Request, res: Response): void {
+    static updateUserProfile(req: Request, res: Response): void {
         const userId = req.params.id;
-        const updatedUserData = req.body;
+        const {userName, phoneNo, location, profilePhoto } = req.body; // Assuming the request body contains the updated profile data
 
-        UserController.updateUser(userId, updatedUserData)
+        const userProfileData = new UserProfile();
+        userProfileData.userName = userName;
+        userProfileData.phoneNo = phoneNo;
+        userProfileData.location = location;
+        userProfileData.profilePhoto = profilePhoto;
+
+        ProfileController.updateProfile(userId, userProfileData)
             .then((success) => {
                 if (success) {
                     res.status(200).json({ message: "Profile updated successfully" });
@@ -65,6 +72,7 @@ class UserActions {
                 res.status(500).json({ message: "Internal server error" });
             });
     }
+
 
     // Delete user account
     static deleteAccount(req: Request, res: Response): void {

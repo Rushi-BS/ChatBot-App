@@ -20,7 +20,7 @@ const Routes: Array<{
         {
             method: 'put',
             route: '/user/updateProfile',
-            action: UserActions.updateProfile,
+            action: UserActions.updateUserProfile,
             // middleware: jwtMiddleware,
         },
         {
