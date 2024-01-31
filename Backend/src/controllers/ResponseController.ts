@@ -16,7 +16,7 @@ class ResponseController {
     }
 
     // Method to create a new response
-    static createResponse = async (responseData: Response): Promise<boolean> => {
+    static saveResponse = async (responseData: Response): Promise<boolean> => {
         try {
             await responseRepo.save(responseData);
             return true;
