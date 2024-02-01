@@ -12,6 +12,7 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
 const User_1 = require("../entities/User");
+const UserProfile_1 = require("../entities/UserProfile");
 const userRepo = data_source_1.AppDataSource.getRepository(User_1.User);
 class UserController {
 }
@@ -43,6 +44,7 @@ UserController.getUserByEmailAndPassword = (email, hashedPassword) => __awaiter(
 // Method to create a new user 
 UserController.createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        user.userProfile = new UserProfile_1.UserProfile();
         yield userRepo.save(user);
         return true;
     }

@@ -184,4 +184,16 @@ ChatActions.endChat = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: "Failed to end chat" });
     }
 });
+// Action to get chat feedback
+ChatActions.chatFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+    }
+    catch (error) {
+    }
+});
 exports.default = ChatActions;

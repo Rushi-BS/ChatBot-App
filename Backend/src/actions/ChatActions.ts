@@ -197,6 +197,21 @@ class ChatActions {
         }
     }
 
+    // Action to get chat feedback
+    static chatFeedback = async (req: Req, res: Res): Promise<void> => {
+        try {
+            const { userId } = req.params;
+            if (!userId) {
+                res.status(400).json({ message: "Invalid request" });
+                return;
+            }
+        } catch (error) {
+            
+        }
+
+
+    }
+
     // Action to get history of a chat
     //  
 }

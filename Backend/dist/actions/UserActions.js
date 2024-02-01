@@ -70,7 +70,6 @@ UserActions.updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, 
         if (!user) {
             throw new Error("User not found");
         }
-        // Update user profile properties
         user.userProfile.userName = userName;
         user.userProfile.phoneNo = phoneNo;
         user.userProfile.location = location;

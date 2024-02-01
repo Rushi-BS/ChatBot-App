@@ -6,16 +6,16 @@ export class UserProfile {
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column()
+    @Column({nullable: true})
     userName: string;
 
-    @Column({})
+    @Column({nullable: true})
     phoneNo: number;
 
-    @Column()
+    @Column({nullable: true})
     location: string;
 
-    @Column()
+    @Column({nullable: true})
     profilePhoto: string;
 
     @OneToOne(() => User, user => user.userProfile)

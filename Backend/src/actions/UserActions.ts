@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import UserController from "../controllers/UserController";
-import ProfileController from "../controllers/ProfileController"
 import { User } from "../entities/User";
-import { UserProfile } from "../entities/UserProfile";
 
 class UserActions {
     // Sign in user
@@ -65,7 +63,6 @@ class UserActions {
                 throw new Error("User not found");
             }
 
-            // Update user profile properties
             user.userProfile.userName = userName;
             user.userProfile.phoneNo = phoneNo;
             user.userProfile.location = location;
@@ -94,7 +91,6 @@ class UserActions {
             return;
         }
 
-        
         UserController.deleteUser(userId)
             .then((success) => {
                 console.log(success);

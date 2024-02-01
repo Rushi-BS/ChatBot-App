@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
+import { UserProfile } from "../entities/UserProfile";
 
 const userRepo: Repository<User> = AppDataSource.getRepository(User);
 
@@ -35,6 +36,7 @@ class UserController {
     // Method to create a new user 
     static createUser = async (user: User): Promise<boolean> => {
         try {
+            user.userProfile = new UserProfile();
             await userRepo.save(user);
             return true;
         }
