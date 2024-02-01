@@ -19,7 +19,7 @@ class ChatActions {
             const { userId } = req.params;
             const { chatName }: { chatName: string } = req.body;
 
-            if(!userId || !chatName) {
+            if (!userId || !chatName) {
                 res.status(400).json({ message: "Invalid request" });
                 return;
             }
@@ -38,7 +38,7 @@ class ChatActions {
 
             const success = await ChatController.createChat(chatData);
             if (success) {
-                res.status(201).json({ message: "Chat started successfully", chat: chatData});
+                res.status(201).json({ message: "Chat started successfully", chat: chatData });
             } else {
                 res.status(500).json({ message: "Failed to start chat" });
             }
@@ -200,20 +200,32 @@ class ChatActions {
     // Action to get chat feedback
     static chatFeedback = async (req: Req, res: Res): Promise<void> => {
         try {
-            const { userId } = req.params;
-            if (!userId) {
+            const { chatId } = req.params;
+            const { feedback }: { feedback: string } = req.body;
+            if (!chatId || !feedback) {
                 res.status(400).json({ message: "Invalid request" });
                 return;
             }
+
+            const chat = await ChatController.getChatById(chatId);
+
+            if (!chat) {
+                res.status(404).json({ message: "Chat not found" });
+                return;
+            }
+
+            chat.feedback = feedback;
+            const success = await ChatController.updateChat(chatId, chat);
+            if (success) {
+                res.status(200).json({ message: "Feedback submitted successfully" });
+            } else {
+                res.status(500).json({ message: "Failed to submit feedback" });
+            }
         } catch (error) {
-            
+            console.error(error.message);
+            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
         }
-
-
     }
-
-    // Action to get history of a chat
-    //  
 }
 
 export default ChatActions;

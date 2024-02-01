@@ -54,6 +54,12 @@ const Routes = [
     action: ChatActions.deleteChat,
     // middleware: jwtMiddleware,
   },
+  {
+    method: 'post',
+    route: '/chat/:chatId/feedback',
+    action: ChatActions.chatFeedback,
+    // middleware: jwtMiddleware,
+  }
 ];
 
 export default Routes;
