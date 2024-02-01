@@ -30,7 +30,7 @@ class AgentController {
     // Method to update an existing agent
     static updateAgent = async (agentId: string, agentDataToUpdate: Agent): Promise<boolean> => {
         try {
-            const agent = await agentRepo.findOneBy({ id: agentId});
+            const agent = await agentRepo.findOneBy({ id: agentId });
             if (agent) {
                 await agentRepo.update(agentId, agentDataToUpdate);
                 return true;
@@ -46,7 +46,7 @@ class AgentController {
     // Method to delete an agent
     static deleteAgent = async (agentId: string): Promise<boolean> => {
         try {
-            const agent = await agentRepo.findOneBy({ id: agentId});
+            const agent = await agentRepo.findOneBy({ id: agentId });
             if (agent) {
                 await agentRepo.remove(agent);
                 return true;

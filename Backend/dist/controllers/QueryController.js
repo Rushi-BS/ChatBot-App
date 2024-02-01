@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
-const Chat_1 = require("../entities/Chat");
-const queryRepo = data_source_1.AppDataSource.getRepository(Chat_1.Query);
+const Query_1 = require("../entities/Query");
+const queryRepo = data_source_1.AppDataSource.getRepository(Query_1.Query);
 class QueryController {
 }
 _a = QueryController;
@@ -24,8 +24,14 @@ QueryController.getAllQueries = () => __awaiter(void 0, void 0, void 0, function
 QueryController.getQueryById = (queryId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield queryRepo.findOneBy({ id: queryId });
 });
+// Method to get all queries of a specific chat
+// static getAllQueriesOfChat = async (chatId: string): Promise<Query[]> => {
+//     return await queryRepo.find({
+//         chatId: chatId,
+//     });
+// }
 // Method to create a new query
-QueryController.createQuery = (queryData) => __awaiter(void 0, void 0, void 0, function* () {
+QueryController.saveQuery = (queryData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield queryRepo.save(queryData);
         return true;

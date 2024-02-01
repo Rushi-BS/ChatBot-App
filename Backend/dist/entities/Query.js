@@ -9,37 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Agent = void 0;
+exports.Query = void 0;
 const typeorm_1 = require("typeorm");
 const Chat_1 = require("./Chat");
-const Response_1 = require("./Response");
-let Agent = class Agent {
+let Query = class Query {
 };
-exports.Agent = Agent;
+exports.Query = Query;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", String)
-], Agent.prototype, "id", void 0);
+], Query.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Agent.prototype, "agentName", void 0);
+], Query.prototype, "text", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Agent.prototype, "issueAttended", void 0);
+    __metadata("design:type", Date)
+], Query.prototype, "timestamp", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Agent.prototype, "rating", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => Chat_1.Chat, chat => chat.agent),
-    __metadata("design:type", Array)
-], Agent.prototype, "chats", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => Response_1.Response, response => response.agent),
-    __metadata("design:type", Array)
-], Agent.prototype, "responses", void 0);
-exports.Agent = Agent = __decorate([
+    (0, typeorm_1.ManyToOne)(() => Chat_1.Chat, chat => chat.queries, { cascade: true }),
+    __metadata("design:type", Chat_1.Chat)
+], Query.prototype, "chat", void 0);
+exports.Query = Query = __decorate([
     (0, typeorm_1.Entity)()
-], Agent);
+], Query);

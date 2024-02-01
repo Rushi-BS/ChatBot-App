@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, JoinColumn, OneToOne, Relation, OneToMany} from "typeorm";
 import { Chat } from "./Chat";
+import { UserProfile } from "./UserProfile";
 
 @Entity()
 export class User {
@@ -18,31 +19,10 @@ export class User {
     @Column()
     isActive: boolean;
 
-    @OneToOne(() => UserProfile, userProfile => userProfile.user)
+    @OneToOne(() => UserProfile, userProfile => userProfile.user, { cascade: true })
     @JoinColumn()
-    userProfile: Relation<UserProfile>; 
+    userProfile: UserProfile; 
 
     @OneToMany(() => Chat, (chat) => chat.startBy)
     chats: Chat[];
-}
-
-@Entity()
-export class UserProfile {
-    @PrimaryGeneratedColumn()
-    id: string;
-
-    @Column()
-    userName: string;
-
-    @Column({})
-    phoneNo: number;
-
-    @Column()
-    location: string;
-
-    @Column()
-    profilePhoto: string;
-
-    @OneToOne(() => User, user => user.userProfile)
-    user: Relation<User>; // Used Relation<> type because we're using esm (EcmaScript Modules) instead of commonjs
 }

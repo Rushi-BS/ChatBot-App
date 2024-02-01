@@ -22,7 +22,10 @@ UserController.getAllUsers = () => __awaiter(void 0, void 0, void 0, function* (
 });
 // Method to get a user by ID 
 UserController.getUserById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield userRepo.findOneBy({ id: id });
+    return yield userRepo.findOne({
+        where: { id: id },
+        relations: { userProfile: true }
+    });
 });
 //Method to get user by email & password
 UserController.getUserByEmailAndPassword = (email, hashedPassword) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,9 +54,9 @@ UserController.createUser = (user) => __awaiter(void 0, void 0, void 0, function
 // Method to update a user
 UserController.updateUser = (id, userDataToUpdate) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield userRepo.findOneBy({ id: id });
+        let user = yield _a.getUserById(id);
         if (user) {
-            yield userRepo.update(id, userDataToUpdate);
+            yield userRepo.save(userDataToUpdate);
             return true;
         }
         return false;
@@ -66,7 +69,7 @@ UserController.updateUser = (id, userDataToUpdate) => __awaiter(void 0, void 0, 
 // Method to delete a user
 UserController.deleteUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let user = yield userRepo.findOneBy({ id: id });
+        let user = yield _a.getUserById(id);
         if (user) {
             user.isActive = false;
             yield userRepo.save(user);

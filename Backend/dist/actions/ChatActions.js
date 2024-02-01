@@ -18,6 +18,8 @@ const ChatController_1 = __importDefault(require("../controllers/ChatController"
 const QueryController_1 = __importDefault(require("../controllers/QueryController"));
 const ResponseController_1 = __importDefault(require("../controllers/ResponseController"));
 const Chat_1 = require("../entities/Chat");
+const Query_1 = require("../entities/Query");
+const Response_1 = require("../entities/Response");
 const openai_1 = __importDefault(require("openai"));
 const config_1 = __importDefault(require("../config"));
 const { openai_api_key } = config_1.default;
@@ -42,7 +44,6 @@ ChatActions.startChat = (req, res) => __awaiter(void 0, void 0, void 0, function
         chatData.chatName = chatName;
         chatData.startBy = user;
         chatData.startAt = new Date();
-        console.log("Chatdata: ", chatData);
         const success = yield ChatController_1.default.createChat(chatData);
         if (success) {
             res.status(201).json({ message: "Chat started successfully", chat: chatData });
@@ -58,7 +59,8 @@ ChatActions.startChat = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 // Action to send a query in an ongoing chat
 ChatActions.sendQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { chatId, queryText } = req.body;
+    const { chatId } = req.params;
+    const { queryText } = req.body;
     if (!chatId || !queryText) {
         res.status(400).json({ message: "Invalid request" });
         return;
@@ -68,24 +70,23 @@ ChatActions.sendQuery = (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(404).json({ message: "Chat not found" });
         return;
     }
-    const queryData = new Chat_1.Query();
+    const queryData = new Query_1.Query();
     queryData.chat = chat;
     queryData.text = queryText;
     queryData.timestamp = new Date();
-    const success = yield QueryController_1.default.createQuery(queryData);
+    const success = yield QueryController_1.default.saveQuery(queryData);
     if (success) {
         try {
             const responseText = yield _a.getResponseFromBot(queryText);
             if (!responseText) {
                 throw new Error("Failed to get response from bot");
             }
-            const responseData = new Chat_1.Response();
+            const responseData = new Response_1.Response();
             responseData.chat = chat;
             responseData.text = responseText;
             responseData.timestamp = new Date();
-            // responseData.isBotResponse = true;
-            yield ResponseController_1.default.createResponse(responseData);
-            res.status(200).json({ message: "Query sent successfully", response: responseData });
+            yield ResponseController_1.default.saveResponse(responseData);
+            res.status(200).json({ message: "Received response successfully", query: queryData, responseData: responseData });
         }
         catch (error) {
             console.error(error.message);
@@ -124,7 +125,7 @@ ChatActions.getResponseFromBot = (query) => __awaiter(void 0, void 0, void 0, fu
     }
     catch (error) {
         console.error('Error:', error);
-        return "";
+        return;
     }
 });
 // Action to get all past chats of a user
@@ -136,7 +137,7 @@ ChatActions.getChatsList = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     const chatsList = yield ChatController_1.default.getAllChatsOfUser(userId);
     if (chatsList) {
-        res.status(200).json({ chatsList });
+        res.status(200).json({ message: "Chats list fetched successfully", chatsList: chatsList });
     }
     else {
         res.status(500).json({ message: "Failed to get chats list" });
@@ -164,7 +165,11 @@ ChatActions.deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, functio
 });
 // Action to end a chat
 ChatActions.endChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { chatId } = req.body;
+    const { chatId } = req.params;
+    if (!chatId) {
+        res.status(400).json({ message: "Invalid request" });
+        return;
+    }
     const chat = yield ChatController_1.default.getChatById(chatId);
     if (!chat) {
         res.status(404).json({ message: "Chat not found" });

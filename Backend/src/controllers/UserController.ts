@@ -12,7 +12,11 @@ class UserController {
 
     // Method to get a user by ID 
     static getUserById = async (id: string): Promise<User> => {
-        return await userRepo.findOneBy({ id: id });
+        return await userRepo.findOne(
+            {
+                where: { id: id },
+                relations: { userProfile: true }
+            });
     }
 
     //Method to get user by email & password
@@ -43,9 +47,9 @@ class UserController {
     // Method to update a user
     static updateUser = async (id: string, userDataToUpdate: User): Promise<boolean> => {
         try {
-            let user = await userRepo.findOneBy({ id: id });
+            let user = await UserController.getUserById(id);
             if (user) {
-                await userRepo.update(id, userDataToUpdate);
+                await userRepo.save(userDataToUpdate);
                 return true;
             }
             return false;
@@ -59,7 +63,7 @@ class UserController {
     // Method to delete a user
     static deleteUser = async (id: string): Promise<boolean> => {
         try {
-            let user = await userRepo.findOneBy({ id: id });
+            let user = await UserController.getUserById(id);
             if (user) {
                 user.isActive = false;
                 await userRepo.save(user);

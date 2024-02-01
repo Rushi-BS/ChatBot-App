@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import UserController from "../controllers/UserController";
 import ProfileController from "../controllers/ProfileController"
-import { User, UserProfile } from "../entities/User";
+import { User } from "../entities/User";
+import { UserProfile } from "../entities/UserProfile";
 
 class UserActions {
     // Sign in user
@@ -47,39 +48,56 @@ class UserActions {
             });
     }
 
-    // TODO: Check update logic
     // Update user profile
-    static updateUserProfile(req: Request, res: Response): void {
-        const userId = req.params.id;
-        const {userName, phoneNo, location, profilePhoto } = req.body; // Assuming the request body contains the updated profile data
+    static updateUserProfile = async (req: Request, res: Response): Promise<void> => {
+        try {
+            const { userId } = req.params;
+            const { userName, phoneNo, location, profilePhoto } = req.body;
 
-        const userProfileData = new UserProfile();
-        userProfileData.userName = userName;
-        userProfileData.phoneNo = phoneNo;
-        userProfileData.location = location;
-        userProfileData.profilePhoto = profilePhoto;
+            if (!userId || !userName || !phoneNo || !location || !profilePhoto) {
+                res.status(400).json({ message: "Invalid request" });
+                return;
+            }
 
-        ProfileController.updateProfile(userId, userProfileData)
-            .then((success) => {
-                if (success) {
-                    res.status(200).json({ message: "Profile updated successfully" });
-                } else {
-                    res.status(404).json({ message: "User not found" });
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Internal server error" });
-            });
+            const user = await UserController.getUserById(userId);
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            // Update user profile properties
+            user.userProfile.userName = userName;
+            user.userProfile.phoneNo = phoneNo;
+            user.userProfile.location = location;
+            user.userProfile.profilePhoto = profilePhoto;
+
+            const success = await UserController.updateUser(userId, user);
+
+            if (success) {
+                res.status(200).json({ message: "Profile updated successfully" });
+            } else {
+                throw new Error("Failed to update profile");
+            }
+
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).json({ message: error.message || "Facing issue at server end. Please try again later!" });
+        }
     }
 
-
     // Delete user account
-    static deleteAccount(req: Request, res: Response): void {
-        const userId = req.params.userId;
+    static deleteAccount = (req: Request, res: Response): Promise<void> => {
+        const { userId } = req.params;
 
+        if (!userId) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+
+        
         UserController.deleteUser(userId)
             .then((success) => {
+                console.log(success);
                 if (success) {
                     res.status(200).json({ message: "Account deleted successfully" });
                 } else {

@@ -1,6 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Agent } from "./Agent";
 import { User } from "./User";
+import { Query } from "./Query";
+import { Response } from "./Response";
 
 @Entity()
 export class Chat {
@@ -39,39 +41,4 @@ export class Chat {
 
     @ManyToOne(() => Agent, agent => agent.chats)
     agent: Agent;
-}
-
-@Entity()
-export class Query {
-    @PrimaryGeneratedColumn()
-    id: string;
-
-    @Column()
-    text: string;
-
-    @Column()
-    timestamp: Date;
-
-    @ManyToOne(() => Chat, chat => chat.queries, {cascade: true})
-    chat: Chat;
-}
-
-@Entity()
-export class Response {
-    @PrimaryGeneratedColumn()
-    id: string;
-
-    @Column({ type: 'text'})
-    text: string;
-
-    @Column()
-    timestamp: Date;
-
-    // Foreign key to Agent, nullable for bot responses 
-    @ManyToOne(() => Agent, agent => agent.responses, {nullable: true, cascade: true})
-    @JoinColumn({ name: 'givenBy'})
-    agent: Agent;
-
-    @ManyToOne(() => Chat, chat => chat.responses, {cascade: true})
-    chat: Chat;
 }

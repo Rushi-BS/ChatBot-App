@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { UserProfile } from "../entities/User";
+import { UserProfile } from "../entities/UserProfile";
 
 const profileRepo: Repository<UserProfile> = AppDataSource.getRepository(UserProfile);
 
@@ -43,19 +43,20 @@ class ProfileController {
         }
     }
 
-  // Method to delete a profile
-static deleteProfile = async (id: string): Promise<boolean> => {
-    try {
-        // Use the delete method of the profileRepo
-        const deleteResult = await profileRepo.delete(id);
-
-        // Check if any records were affected by the delete operation
-        return deleteResult.affected !== undefined && deleteResult.affected > 0;
-    } catch (err) {
-        console.log(err);
-        return false;
+    // Method to delete a profile
+    static deleteProfile = async (id: string): Promise<boolean> => {
+        try {
+            const profile = await profileRepo.findOneBy({ id: id });
+            if (profile) {
+                await profileRepo.remove(profile);
+                return true;
+            }
+            return false;
+        } catch (err) {
+            console.log(err);
+            return false;
+        }
     }
-}
 
 }
 

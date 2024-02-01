@@ -9,10 +9,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Response = exports.Query = exports.Chat = void 0;
+exports.Chat = void 0;
 const typeorm_1 = require("typeorm");
 const Agent_1 = require("./Agent");
 const User_1 = require("./User");
+const Query_1 = require("./Query");
+const Response_1 = require("./Response");
 let Chat = class Chat {
 };
 exports.Chat = Chat;
@@ -53,11 +55,11 @@ __decorate([
     __metadata("design:type", String)
 ], Chat.prototype, "feedback", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Query, query => query.chat),
+    (0, typeorm_1.OneToMany)(() => Query_1.Query, query => query.chat),
     __metadata("design:type", Array)
 ], Chat.prototype, "queries", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Response, response => response.chat),
+    (0, typeorm_1.OneToMany)(() => Response_1.Response, response => response.chat),
     __metadata("design:type", Array)
 ], Chat.prototype, "responses", void 0);
 __decorate([
@@ -67,52 +69,3 @@ __decorate([
 exports.Chat = Chat = __decorate([
     (0, typeorm_1.Entity)()
 ], Chat);
-let Query = class Query {
-};
-exports.Query = Query;
-__decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", String)
-], Query.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], Query.prototype, "text", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Date)
-], Query.prototype, "timestamp", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Chat, chat => chat.queries, { cascade: true }),
-    __metadata("design:type", Chat)
-], Query.prototype, "chat", void 0);
-exports.Query = Query = __decorate([
-    (0, typeorm_1.Entity)()
-], Query);
-let Response = class Response {
-};
-exports.Response = Response;
-__decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)(),
-    __metadata("design:type", String)
-], Response.prototype, "id", void 0);
-__decorate([
-    (0, typeorm_1.Column)({ type: 'text' }),
-    __metadata("design:type", String)
-], Response.prototype, "text", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", Date)
-], Response.prototype, "timestamp", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Agent_1.Agent, agent => agent.responses, { nullable: true, cascade: true }),
-    (0, typeorm_1.JoinColumn)({ name: 'givenBy' }),
-    __metadata("design:type", Agent_1.Agent)
-], Response.prototype, "agent", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => Chat, chat => chat.responses, { cascade: true }),
-    __metadata("design:type", Chat)
-], Response.prototype, "chat", void 0);
-exports.Response = Response = __decorate([
-    (0, typeorm_1.Entity)()
-], Response);

@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { AppDataSource } from "../data-source";
-import { Response } from "../entities/Chat";
+import { Response } from "../entities/Response";
 
 const responseRepo: Repository<Response> = AppDataSource.getRepository(Response);
 

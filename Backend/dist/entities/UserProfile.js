@@ -9,37 +9,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Agent = void 0;
+exports.UserProfile = void 0;
 const typeorm_1 = require("typeorm");
-const Chat_1 = require("./Chat");
-const Response_1 = require("./Response");
-let Agent = class Agent {
+const User_1 = require("./User");
+let UserProfile = class UserProfile {
 };
-exports.Agent = Agent;
+exports.UserProfile = UserProfile;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", String)
-], Agent.prototype, "id", void 0);
+], UserProfile.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Agent.prototype, "agentName", void 0);
+], UserProfile.prototype, "userName", void 0);
+__decorate([
+    (0, typeorm_1.Column)({}),
+    __metadata("design:type", Number)
+], UserProfile.prototype, "phoneNo", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Agent.prototype, "issueAttended", void 0);
+    __metadata("design:type", String)
+], UserProfile.prototype, "location", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
-], Agent.prototype, "rating", void 0);
+    __metadata("design:type", String)
+], UserProfile.prototype, "profilePhoto", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Chat_1.Chat, chat => chat.agent),
-    __metadata("design:type", Array)
-], Agent.prototype, "chats", void 0);
-__decorate([
-    (0, typeorm_1.OneToMany)(() => Response_1.Response, response => response.agent),
-    __metadata("design:type", Array)
-], Agent.prototype, "responses", void 0);
-exports.Agent = Agent = __decorate([
+    (0, typeorm_1.OneToOne)(() => User_1.User, user => user.userProfile),
+    __metadata("design:type", User_1.User)
+], UserProfile.prototype, "user", void 0);
+exports.UserProfile = UserProfile = __decorate([
     (0, typeorm_1.Entity)()
-], Agent);
+], UserProfile);

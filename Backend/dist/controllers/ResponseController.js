@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const data_source_1 = require("../data-source");
-const Chat_1 = require("../entities/Chat");
-const responseRepo = data_source_1.AppDataSource.getRepository(Chat_1.Response);
+const Response_1 = require("../entities/Response");
+const responseRepo = data_source_1.AppDataSource.getRepository(Response_1.Response);
 class ResponseController {
 }
 _a = ResponseController;
@@ -25,7 +25,7 @@ ResponseController.getResponseById = (responseId) => __awaiter(void 0, void 0, v
     return yield responseRepo.findOneBy({ id: responseId });
 });
 // Method to create a new response
-ResponseController.createResponse = (responseData) => __awaiter(void 0, void 0, void 0, function* () {
+ResponseController.saveResponse = (responseData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield responseRepo.save(responseData);
         return true;

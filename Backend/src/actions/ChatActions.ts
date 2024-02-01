@@ -3,7 +3,9 @@ import UserController from "../controllers/UserController";
 import ChatController from "../controllers/ChatController";
 import QueryController from "../controllers/QueryController";
 import ResponseController from "../controllers/ResponseController";
-import { Chat, Query, Response } from "../entities/Chat";
+import { Chat } from "../entities/Chat";
+import { Query } from "../entities/Query";
+import { Response } from "../entities/Response";
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 import config from "../config";
@@ -34,7 +36,6 @@ class ChatActions {
             chatData.startBy = user;
             chatData.startAt = new Date();
 
-            console.log("Chatdata: ", chatData);
             const success = await ChatController.createChat(chatData);
             if (success) {
                 res.status(201).json({ message: "Chat started successfully", chat: chatData});
@@ -49,7 +50,8 @@ class ChatActions {
 
     // Action to send a query in an ongoing chat
     static sendQuery = async (req: Req, res: Res): Promise<void> => {
-        const { chatId, queryText }: { chatId: string, queryText: string } = req.body;
+        const { chatId } = req.params;
+        const { queryText }: { queryText: string } = req.body;
 
         if (!chatId || !queryText) {
             res.status(400).json({ message: "Invalid request" });
@@ -123,7 +125,7 @@ class ChatActions {
         }
         catch (error) {
             console.error('Error:', error);
-            return "";
+            return;
         }
     }
 
@@ -171,7 +173,13 @@ class ChatActions {
 
     // Action to end a chat
     static endChat = async (req: Req, res: Res): Promise<void> => {
-        const { chatId }: { chatId: string } = req.body;
+        const { chatId } = req.params;
+
+        if (!chatId) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+
         const chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
@@ -188,6 +196,9 @@ class ChatActions {
             res.status(500).json({ message: "Failed to end chat" });
         }
     }
+
+    // Action to get history of a chat
+    //  
 }
 
 export default ChatActions;

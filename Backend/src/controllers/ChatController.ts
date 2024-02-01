@@ -31,7 +31,7 @@ class ChatController {
             await chatRepo.save(chatData);
             return true;
         }
-        catch (err) {       
+        catch (err) {
             console.log(err);
             return false;
         }

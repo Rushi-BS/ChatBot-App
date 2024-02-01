@@ -1,7 +1,10 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { User, UserProfile } from "./entities/User"
-import { Chat, Query, Response } from "./entities/Chat"
+import { User} from "./entities/User"
+import { UserProfile } from "./entities/UserProfile"
+import { Chat } from "./entities/Chat"
+import { Query } from "./entities/Query"
+import { Response } from "./entities/Response"
 import { Agent } from "./entities/Agent"
 
 export const AppDataSource = new DataSource({
