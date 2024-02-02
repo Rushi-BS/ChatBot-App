@@ -15,48 +15,69 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 const UserController_1 = __importDefault(require("../controllers/UserController"));
 const User_1 = require("../entities/User");
+const Auth_1 = __importDefault(require("../helpers/Auth"));
 class UserActions {
-    // Sign in user
-    static signIn(req, res) {
-        const { email, password } = req.body;
-        UserController_1.default.getUserByEmailAndPassword(email, password)
-            .then((user) => {
-            if (user) {
-                res.status(200).json({ message: "Sign in successful", user });
+}
+_a = UserActions;
+// Sign in user
+UserActions.signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { email, password } = req.body;
+    try {
+        const user = yield UserController_1.default.getUserByEmailAndPassword(email, password);
+        if (user) {
+            const isPasswordMatched = yield Auth_1.default.comparePasswords(password, user.hashedPassword);
+            if (isPasswordMatched) {
+                const token = Auth_1.default.generateToken({ userId: user.id, email: user.email });
+                res.json({ Status: "Success", token });
             }
             else {
-                res.status(401).json({ message: "Invalid email or password" });
+                res.json({ Error: "Invalid email or password" });
             }
-        })
-            .catch((error) => {
-            console.error(error);
-            res.status(500).json({ message: "Internal server error" });
-        });
+        }
+        else {
+            res.json({ Error: "Invalid email or password" });
+        }
     }
-    // Sign up user
-    static signUp(req, res) {
-        const { email, hashedPassword } = req.body;
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ Error: "Internal server error" });
+    }
+});
+// Sign up user
+UserActions.signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { name, email, password } = req.body;
+    try {
+        // Check if the email is already in use
+        const existingUser = yield UserController_1.default.getUserByEmailAndPassword(email, password);
+        if (existingUser) {
+            console.log('Email is already in use.');
+            res.status(400).json({ Error: "Email is already in use" });
+            return;
+        }
+        // Hash the password
+        const hashedPassword = yield Auth_1.default.hashPassword(password);
+        // Create user data
         const userData = new User_1.User();
         userData.email = email;
         userData.hashedPassword = hashedPassword;
         userData.createdAt = new Date();
         userData.isActive = true;
-        UserController_1.default.createUser(userData)
-            .then((success) => {
-            if (success) {
-                res.status(201).json({ message: "Sign up successful" });
-            }
-            else {
-                res.status(400).json({ message: "Sign up failed" });
-            }
-        })
-            .catch((error) => {
-            console.error(error);
-            res.status(500).json({ message: "Internal server error" });
-        });
+        // Create the user
+        const success = yield UserController_1.default.createUser(userData);
+        if (success) {
+            const token = Auth_1.default.generateToken({ name, email });
+            res.status(201).json({ Status: "Success", token });
+        }
+        else {
+            res.status(400).json({ Error: "Sign up failed" });
+        }
     }
-}
-_a = UserActions;
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ Error: "Internal server error" });
+    }
+});
+// TODO: Check update logic
 // Update user profile
 UserActions.updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

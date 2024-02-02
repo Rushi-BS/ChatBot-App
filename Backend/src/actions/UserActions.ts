@@ -1,51 +1,74 @@
 import { Request, Response } from "express";
 import UserController from "../controllers/UserController";
+import ProfileController from "../controllers/ProfileController"
 import { User } from "../entities/User";
+import AuthManager from "../helpers/Auth"
 
 class UserActions {
     // Sign in user
-    static signIn(req: Request, res: Response): void {
+    static signIn = async (req: Request, res: Response): Promise<void> => {
         const { email, password } = req.body;
 
-        UserController.getUserByEmailAndPassword(email, password)
-            .then((user) => {
-                if (user) {
-                    res.status(200).json({ message: "Sign in successful", user });
-                } else {
-                    res.status(401).json({ message: "Invalid email or password" });
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Internal server error" });
-            });
+        try {
+            const user = await UserController.getUserByEmailAndPassword(email, password);
 
-    }
+            if (user) {
+                const isPasswordMatched = await AuthManager.comparePasswords(password, user.hashedPassword);
+
+                if (isPasswordMatched) {
+                    const token = AuthManager.generateToken({ userId: user.id, email: user.email });
+                    res.json({ Status: "Success", token });
+                } else {
+                    res.json({ Error: "Invalid email or password" });
+                }
+            } else {
+                res.json({ Error: "Invalid email or password" });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ Error: "Internal server error" });
+        }
+    };
 
     // Sign up user
-    static signUp(req: Request, res: Response): void {
-        const { email, hashedPassword } = req.body;
+    static signUp = async (req: Request, res: Response): Promise<void> => {
+        const { name, email, password } = req.body;
 
-        const userData = new User();
-        userData.email = email;
-        userData.hashedPassword = hashedPassword;
-        userData.createdAt = new Date();
-        userData.isActive = true;
+        try {
+            // Check if the email is already in use
+            const existingUser = await UserController.getUserByEmailAndPassword(email, password);
 
-        UserController.createUser(userData)
-            .then((success) => {
-                if (success) {
-                    res.status(201).json({ message: "Sign up successful" });
-                } else {
-                    res.status(400).json({ message: "Sign up failed" });
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-                res.status(500).json({ message: "Internal server error" });
-            });
-    }
+            if (existingUser) {
+                console.log('Email is already in use.');
+                res.status(400).json({ Error: "Email is already in use" });
+                return;
+            }
 
+            // Hash the password
+            const hashedPassword = await AuthManager.hashPassword(password);
+
+            // Create user data
+            const userData = new User();
+            userData.email = email;
+            userData.hashedPassword = hashedPassword;
+            userData.createdAt = new Date();
+            userData.isActive = true;
+
+            // Create the user
+            const success = await UserController.createUser(userData);
+
+            if (success) {
+                const token = AuthManager.generateToken({ name, email });
+                res.status(201).json({ Status: "Success", token });
+            } else {
+                res.status(400).json({ Error: "Sign up failed" });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ Error: "Internal server error" });
+        }
+    };
+    // TODO: Check update logic
     // Update user profile
     static updateUserProfile = async (req: Request, res: Response): Promise<void> => {
         try {
