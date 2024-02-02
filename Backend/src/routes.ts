@@ -59,6 +59,12 @@ const Routes: Array<{
       action: ChatActions.deleteChat,
       // middleware: jwtMiddleware,
     },
+    {
+      method: 'get',
+      route: '/chat/:chatId/chatHistory',
+      action: ChatActions.getChatHistory,
+      // middleware: jwtMiddleware,
+    }
   ];
 
 export default Routes;

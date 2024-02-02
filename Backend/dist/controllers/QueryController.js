@@ -32,6 +32,7 @@ QueryController.getQueryById = (queryId) => __awaiter(void 0, void 0, void 0, fu
 // }
 // Method to create a new query
 QueryController.saveQuery = (queryData) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(queryData);
     try {
         yield queryRepo.save(queryData);
         return true;

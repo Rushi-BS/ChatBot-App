@@ -52,6 +52,7 @@ class ChatActions {
     static sendQuery = async (req: Req, res: Res): Promise<void> => {
         const { chatId } = req.params;
         const { queryText }: { queryText: string } = req.body;
+        console.log(chatId, queryText);
 
         if (!chatId || !queryText) {
             res.status(400).json({ message: "Invalid request" });
@@ -59,6 +60,8 @@ class ChatActions {
         }
 
         const chat: Chat = await ChatController.getChatById(chatId);
+
+        console.log(chat);
 
         if (!chat) {
             res.status(404).json({ message: "Chat not found" });
@@ -70,7 +73,10 @@ class ChatActions {
         queryData.text = queryText;
         queryData.timestamp = new Date();
 
+        console.log(queryData);
+
         const success = await QueryController.saveQuery(queryData);
+        console.log(success);
         if (success) {
             try {
                 const responseText = await this.getResponseFromBot(queryText);
@@ -83,7 +89,7 @@ class ChatActions {
                 responseData.timestamp = new Date();
 
                 await ResponseController.saveResponse(responseData);
-                res.status(200).json({ message: "Received response successfully", query: queryData, responseData: responseData });
+                res.status(200).json({ message: "Received response successfully", queryData: queryData, responseData: responseData });
             } catch (error) {
                 console.error(error.message);
                 res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
@@ -220,6 +226,66 @@ class ChatActions {
                 res.status(200).json({ message: "Feedback submitted successfully" });
             } else {
                 res.status(500).json({ message: "Failed to submit feedback" });
+            }
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+        }
+    }
+
+    // Action to get chat history
+    static getChatHistory = async (req: Req, res: Res): Promise<void> => {
+        try {
+            const { chatId } = req.params;
+
+            if (!chatId) {
+                res.status(400).json({ message: "Invalid request" });
+                return;
+            }
+
+            const chat = await ChatController.getChatByIdWithRelations(chatId);
+
+            if (!chat) {
+                res.status(404).json({ message: "Chat not found" });
+                return;
+            }
+
+            type messageType = {
+                type: '0' | '1', // type = 0 for query, 1 for response
+                text: string,
+                timestamp: Date
+            }
+
+            // Combine queries and responses into a single array.
+            const messages: Array<messageType> = [];
+
+            chat.queries.forEach(query => {
+                const msg: messageType = {
+                    type: '0',
+                    text: query.text,
+                    timestamp: query.timestamp
+                }
+                messages.push(msg);
+            });
+
+            chat.responses.forEach(response => {
+                const msg: messageType = {
+                    type: '1',
+                    text: response.text,
+                    timestamp: response.timestamp
+                }
+                messages.push(msg);
+            });
+
+            // Sort the messages array based on the timestamp.
+            messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
+            console.log(messages);
+
+            if (messages.length > 0) {
+                res.status(200).json({ message: "Chat history fetched successfully", chatHistory: messages });
+            } else {
+                res.status(500).json({ message: "Failed to get chat history" });
             }
         } catch (error) {
             console.error(error.message);

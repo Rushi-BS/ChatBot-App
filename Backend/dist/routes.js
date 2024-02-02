@@ -59,9 +59,9 @@ const Routes = [
         // middleware: jwtMiddleware,
     },
     {
-        method: 'post',
-        route: '/chat/:chatId/feedback',
-        action: ChatActions_1.default.chatFeedback,
+        method: 'get',
+        route: '/chat/:chatId/chatHistory',
+        action: ChatActions_1.default.getChatHistory,
         // middleware: jwtMiddleware,
     }
 ];

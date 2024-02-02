@@ -12,6 +12,6 @@ export class Query {
     @Column()
     timestamp: Date;
 
-    @ManyToOne(() => Chat, chat => chat.queries, {cascade: true})
+    @ManyToOne(() => Chat, chat => chat.queries, { cascade: true })
     chat: Chat;
 }
