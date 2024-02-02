@@ -149,7 +149,7 @@ ChatActions.getChatsList = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 // Action to delete a chat
 ChatActions.deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { chatId } = req.body;
+    const { chatId } = req.params;
     if (!chatId) {
         res.status(400).json({ message: "Invalid request" });
         return;
@@ -188,7 +188,35 @@ ChatActions.endChat = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: "Failed to end chat" });
     }
 });
-// Action to get chat feedback
+// Action for chat rating
+ChatActions.chatRating = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { chatId } = req.params;
+        const { rating } = req.body;
+        if (!chatId || !rating) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+        const chat = yield ChatController_1.default.getChatById(chatId);
+        if (!chat) {
+            res.status(404).json({ message: "Chat not found" });
+            return;
+        }
+        chat.rating = rating;
+        const success = yield ChatController_1.default.updateChat(chatId, chat);
+        if (success) {
+            res.status(200).json({ message: "Rating submitted successfully" });
+        }
+        else {
+            res.status(500).json({ message: "Failed to submit rating" });
+        }
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+    }
+});
+// Action for chat feedback
 ChatActions.chatFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { chatId } = req.params;

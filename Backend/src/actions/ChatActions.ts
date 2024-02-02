@@ -155,7 +155,7 @@ class ChatActions {
 
     // Action to delete a chat
     static deleteChat = async (req: Req, res: Res): Promise<void> => {
-        const { chatId }: { chatId: string } = req.body;
+        const { chatId } = req.params;
 
         if (!chatId) {
             res.status(400).json({ message: "Invalid request" });
@@ -203,7 +203,37 @@ class ChatActions {
         }
     }
 
-    // Action to get chat feedback
+    // Action for chat rating
+    static chatRating = async (req: Req, res: Res): Promise<void> => {
+        try {
+            const { chatId } = req.params;
+            const { rating }: { rating: number } = req.body;
+            if (!chatId || !rating) {
+                res.status(400).json({ message: "Invalid request" });
+                return;
+            }
+
+            const chat = await ChatController.getChatById(chatId);
+
+            if (!chat) {
+                res.status(404).json({ message: "Chat not found" });
+                return;
+            }
+
+            chat.rating = rating;
+            const success = await ChatController.updateChat(chatId, chat);
+            if (success) {
+                res.status(200).json({ message: "Rating submitted successfully" });
+            } else {
+                res.status(500).json({ message: "Failed to submit rating" });
+            }
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+        }
+    }
+
+    // Action for chat feedback
     static chatFeedback = async (req: Req, res: Res): Promise<void> => {
         try {
             const { chatId } = req.params;

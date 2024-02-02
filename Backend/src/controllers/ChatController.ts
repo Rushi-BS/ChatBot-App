@@ -49,7 +49,7 @@ class ChatController {
         try {
             const chat = await chatRepo.findOneBy({ id: chatId });
             if (chat) {
-                await chatRepo.update(chatId, chatDataToUpdate);
+                await chatRepo.save(chatDataToUpdate);
                 return true;
             }
             return false;

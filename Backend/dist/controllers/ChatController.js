@@ -55,7 +55,7 @@ ChatController.updateChat = (chatId, chatDataToUpdate) => __awaiter(void 0, void
     try {
         const chat = yield chatRepo.findOneBy({ id: chatId });
         if (chat) {
-            yield chatRepo.update(chatId, chatDataToUpdate);
+            yield chatRepo.save(chatDataToUpdate);
             return true;
         }
         return false;
