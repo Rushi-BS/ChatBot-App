@@ -30,7 +30,7 @@ const Routes = [
     },
     {
         method: 'get',
-        route: '/chat/:userId/getChatsList',
+        route: '/chat/:userId/chatsList',
         action: ChatActions_1.default.getChatsList,
         // middleware: jwtMiddleware,
     },
@@ -42,20 +42,32 @@ const Routes = [
     },
     {
         method: 'post',
-        route: '/chat/:chatId/sendQuery',
+        route: '/chat/:chatId/send',
         action: ChatActions_1.default.sendQuery,
         // middleware: jwtMiddleware,
     },
     {
         method: 'put',
-        route: '/chat/:chatId/endChat',
+        route: '/chat/:chatId/end',
         action: ChatActions_1.default.endChat,
         // middleware: jwtMiddleware,
     },
     {
         method: 'delete',
-        route: '/chat/:chatId/deleteChat',
+        route: '/chat/:chatId/delete',
         action: ChatActions_1.default.deleteChat,
+        // middleware: jwtMiddleware,
+    },
+    {
+        method: 'get',
+        route: '/chat/:chatId/history',
+        action: ChatActions_1.default.getChatHistory,
+        // middleware: jwtMiddleware,
+    },
+    {
+        method: 'post',
+        route: '/chat/:chatId/rating',
+        action: ChatActions_1.default.chatRating,
         // middleware: jwtMiddleware,
     },
     {
@@ -63,6 +75,6 @@ const Routes = [
         route: '/chat/:chatId/feedback',
         action: ChatActions_1.default.chatFeedback,
         // middleware: jwtMiddleware,
-    }
+    },
 ];
 exports.default = Routes;

@@ -61,11 +61,13 @@ ChatActions.startChat = (req, res) => __awaiter(void 0, void 0, void 0, function
 ChatActions.sendQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { chatId } = req.params;
     const { queryText } = req.body;
+    console.log(chatId, queryText);
     if (!chatId || !queryText) {
         res.status(400).json({ message: "Invalid request" });
         return;
     }
     const chat = yield ChatController_1.default.getChatById(chatId);
+    console.log(chat);
     if (!chat) {
         res.status(404).json({ message: "Chat not found" });
         return;
@@ -74,7 +76,9 @@ ChatActions.sendQuery = (req, res) => __awaiter(void 0, void 0, void 0, function
     queryData.chat = chat;
     queryData.text = queryText;
     queryData.timestamp = new Date();
+    console.log(queryData);
     const success = yield QueryController_1.default.saveQuery(queryData);
+    console.log(success);
     if (success) {
         try {
             const responseText = yield _a.getResponseFromBot(queryText);
@@ -86,7 +90,7 @@ ChatActions.sendQuery = (req, res) => __awaiter(void 0, void 0, void 0, function
             responseData.text = responseText;
             responseData.timestamp = new Date();
             yield ResponseController_1.default.saveResponse(responseData);
-            res.status(200).json({ message: "Received response successfully", query: queryData, responseData: responseData });
+            res.status(200).json({ message: "Received response successfully", queryData: queryData, responseData: responseData });
         }
         catch (error) {
             console.error(error.message);
@@ -145,7 +149,7 @@ ChatActions.getChatsList = (req, res) => __awaiter(void 0, void 0, void 0, funct
 });
 // Action to delete a chat
 ChatActions.deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { chatId } = req.body;
+    const { chatId } = req.params;
     if (!chatId) {
         res.status(400).json({ message: "Invalid request" });
         return;
@@ -184,7 +188,35 @@ ChatActions.endChat = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(500).json({ message: "Failed to end chat" });
     }
 });
-// Action to get chat feedback
+// Action for chat rating
+ChatActions.chatRating = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { chatId } = req.params;
+        const { rating } = req.body;
+        if (!chatId || !rating) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+        const chat = yield ChatController_1.default.getChatById(chatId);
+        if (!chat) {
+            res.status(404).json({ message: "Chat not found" });
+            return;
+        }
+        chat.rating = rating;
+        const success = yield ChatController_1.default.updateChat(chatId, chat);
+        if (success) {
+            res.status(200).json({ message: "Rating submitted successfully" });
+        }
+        else {
+            res.status(500).json({ message: "Failed to submit rating" });
+        }
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+    }
+});
+// Action for chat feedback
 ChatActions.chatFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { chatId } = req.params;
@@ -205,6 +237,52 @@ ChatActions.chatFeedback = (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         else {
             res.status(500).json({ message: "Failed to submit feedback" });
+        }
+    }
+    catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+    }
+});
+// Action to get chat history
+ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { chatId } = req.params;
+        if (!chatId) {
+            res.status(400).json({ message: "Invalid request" });
+            return;
+        }
+        const chat = yield ChatController_1.default.getChatByIdWithRelations(chatId);
+        if (!chat) {
+            res.status(404).json({ message: "Chat not found" });
+            return;
+        }
+        // Combine queries and responses into a single array.
+        const messages = [];
+        chat.queries.forEach(query => {
+            const msg = {
+                type: '0',
+                text: query.text,
+                timestamp: query.timestamp
+            };
+            messages.push(msg);
+        });
+        chat.responses.forEach(response => {
+            const msg = {
+                type: '1',
+                text: response.text,
+                timestamp: response.timestamp
+            };
+            messages.push(msg);
+        });
+        // Sort the messages array based on the timestamp.
+        messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+        console.log(messages);
+        if (messages.length > 0) {
+            res.status(200).json({ message: "Chat history fetched successfully", chatHistory: messages });
+        }
+        else {
+            res.status(500).json({ message: "Failed to get chat history" });
         }
     }
     catch (error) {

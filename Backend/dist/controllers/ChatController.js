@@ -33,6 +33,12 @@ ChatController.getAllChatsOfUser = (userId) => __awaiter(void 0, void 0, void 0,
 ChatController.getChatById = (chatId) => __awaiter(void 0, void 0, void 0, function* () {
     return yield chatRepo.findOneBy({ id: chatId });
 });
+ChatController.getChatByIdWithRelations = (chatId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield chatRepo.findOne({
+        where: { id: chatId },
+        relations: { responses: true, queries: true }
+    });
+});
 // Method to create a new chat
 ChatController.createChat = (chatData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,7 +55,7 @@ ChatController.updateChat = (chatId, chatDataToUpdate) => __awaiter(void 0, void
     try {
         const chat = yield chatRepo.findOneBy({ id: chatId });
         if (chat) {
-            yield chatRepo.update(chatId, chatDataToUpdate);
+            yield chatRepo.save(chatDataToUpdate);
             return true;
         }
         return false;

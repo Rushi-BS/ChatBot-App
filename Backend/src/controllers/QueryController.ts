@@ -24,6 +24,7 @@ class QueryController {
 
     // Method to create a new query
     static saveQuery = async (queryData: Query): Promise<boolean> => {
+        console.log(queryData);
         try {
             await queryRepo.save(queryData);
             return true;

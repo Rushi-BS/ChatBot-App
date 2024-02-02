@@ -25,6 +25,13 @@ class ChatController {
         return await chatRepo.findOneBy({ id: chatId });
     }
 
+    static getChatByIdWithRelations = async (chatId: string): Promise<Chat> => {
+        return await chatRepo.findOne({
+            where: { id: chatId },
+            relations: { responses: true, queries: true }
+        });
+    }
+
     // Method to create a new chat
     static createChat = async (chatData: Chat): Promise<boolean> => {
         try {
@@ -42,7 +49,7 @@ class ChatController {
         try {
             const chat = await chatRepo.findOneBy({ id: chatId });
             if (chat) {
-                await chatRepo.update(chatId, chatDataToUpdate);
+                await chatRepo.save(chatDataToUpdate);
                 return true;
             }
             return false;
