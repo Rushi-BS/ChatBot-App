@@ -57,7 +57,6 @@ class ProfileController {
             return false;
         }
     }
-
 }
 
 export default ProfileController;

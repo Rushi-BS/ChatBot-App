@@ -187,13 +187,29 @@ ChatActions.endChat = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 // Action to get chat feedback
 ChatActions.chatFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.params;
-        if (!userId) {
+        const { chatId } = req.params;
+        const { feedback } = req.body;
+        if (!chatId || !feedback) {
             res.status(400).json({ message: "Invalid request" });
             return;
         }
+        const chat = yield ChatController_1.default.getChatById(chatId);
+        if (!chat) {
+            res.status(404).json({ message: "Chat not found" });
+            return;
+        }
+        chat.feedback = feedback;
+        const success = yield ChatController_1.default.updateChat(chatId, chat);
+        if (success) {
+            res.status(200).json({ message: "Feedback submitted successfully" });
+        }
+        else {
+            res.status(500).json({ message: "Failed to submit feedback" });
+        }
     }
     catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
     }
 });
 exports.default = ChatActions;

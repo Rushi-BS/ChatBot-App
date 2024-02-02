@@ -25,7 +25,7 @@ __decorate([
 ], UserProfile.prototype, "userName", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], UserProfile.prototype, "phoneNo", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
