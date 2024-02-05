@@ -33,6 +33,19 @@ class UserController {
         }
     }
 
+      //Method to get user by email
+      static getUserByEmail = async (email: string): Promise<User | undefined> => {
+        try {
+            const user = await userRepo.findOne({
+                where: { email: email },
+            });
+            return user;
+        } catch (err) {
+            console.error(err);
+            return undefined;
+        }
+    }
+
     // Method to create a new user 
     static createUser = async (user: User): Promise<boolean> => {
         try {
