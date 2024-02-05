@@ -1,9 +1,12 @@
+import ChatWindow from "../components/ChatWindow";
+import Layout from "../Layout";
+
 const Chat: React.FC = () => {
-    return (
-      <div>
-        <h1>Chat</h1>
-      </div>
-    );
-  };
-  
-  export default Chat;  
+  return (
+    <Layout>
+      <ChatWindow />
+    </Layout>
+  );
+};
+
+export default Chat;

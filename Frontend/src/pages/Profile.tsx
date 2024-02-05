@@ -1,9 +1,12 @@
-const Profile: React.FC = () => {
-    return (
-      <div>
-        <h1>Profile</h1>
-      </div>
-    );
-  };
-  
-  export default Profile;  
+import Layout from "../Layout";
+import ProfileForm from "../components/forms/ProfileForm";
+
+const Profile = () => {
+  return (
+    <Layout>
+      <ProfileForm />
+    </Layout>
+  );
+};
+
+export default Profile;

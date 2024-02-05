@@ -1,11 +1,30 @@
+import { useState } from "react";
 import SigninForm from "../components/forms/SignInForm";
 
 const Signin: React.FC = () => {
-    return (
-      <div>
-        <SigninForm />
-      </div>
-    );
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    rememberMe: false,
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-  
-  export default Signin;  
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Add your signin logic here
+  };
+  return (
+    <div>
+      <SigninForm formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} />
+    </div>
+  );
+};
+
+export default Signin;
