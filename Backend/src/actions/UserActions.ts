@@ -10,7 +10,7 @@ class UserActions {
         const { email, password } = req.body;
 
         try {
-            const user = await UserController.getUserByEmailAndPassword(email, password);
+            const user = await UserController.getUserByEmail(email);
 
             if (user) {
                 const isPasswordMatched = await AuthManager.comparePasswords(password, user.hashedPassword);

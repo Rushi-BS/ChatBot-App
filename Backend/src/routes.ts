@@ -1,5 +1,6 @@
 import ChatActions from "./actions/ChatActions";
 import UserActions from "./actions/UserActions";
+import jwtMiddleware from "./middlewares/Middleware"
 
 const Routes: Array<{
   method: string;
@@ -21,61 +22,61 @@ const Routes: Array<{
       method: 'put',
       route: '/user/:userId/updateProfile',
       action: UserActions.updateUserProfile,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'delete',
       route: '/user/:userId/deleteAccount',
       action: UserActions.deleteAccount,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'get',
       route: '/chat/:userId/chatsList',
       action: ChatActions.getChatsList,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'post',
       route: '/chat/:userId/start',
       action: ChatActions.startChat,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'post',
       route: '/chat/:chatId/send',
       action: ChatActions.sendQuery,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'put',
       route: '/chat/:chatId/end',
       action: ChatActions.endChat,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'delete',
       route: '/chat/:chatId/delete',
       action: ChatActions.deleteChat,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'get',
       route: '/chat/:chatId/history',
       action: ChatActions.getChatHistory,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'post',
       route: '/chat/:chatId/rating',
       action: ChatActions.chatRating,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
     {
       method: 'post',
       route: '/chat/:chatId/feedback',
       action: ChatActions.chatFeedback,
-      // middleware: jwtMiddleware,
+      middleware: jwtMiddleware,
     },
   ];
 
