@@ -1,4 +1,4 @@
-import Layout from "../Layout";
+import Layout from "../utils/Layout";
 import ProfileForm from "../components/forms/ProfileForm";
 
 const Profile = () => {

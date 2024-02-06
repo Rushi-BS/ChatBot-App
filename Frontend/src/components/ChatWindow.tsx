@@ -1,12 +1,7 @@
 import React, { useState } from "react";
+import { MessageType } from "../utils/type";
 
-type IMessage = {
-  id: number;
-  sender: "user" | "bot" | "support";
-  text: string;
-};
-
-const dummyMessages: Array<IMessage> = [
+const dummyMessages: Array<MessageType> = [
   { id: 1, sender: "bot", text: "Dummy message 1 from user" },
   { id: 2, sender: "user", text: "Dummy message 2 from user" },
   { id: 3, sender: "user", text: "Dummy message 3 from bot" },
@@ -30,14 +25,14 @@ const dummyMessages: Array<IMessage> = [
 ];
 
 const ChatWindow: React.FC = () => {
-  const [messages, setMessages] = useState<IMessage[]>(dummyMessages);
+  const [messages, setMessages] = useState<MessageType[]>(dummyMessages);
   const [newMessage, setNewMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const message: IMessage = {
+    const message: MessageType = {
       id: messages.length + 1, // Simple ID generation
       sender: "user", // Assuming the new message is always from the user
       text: newMessage,

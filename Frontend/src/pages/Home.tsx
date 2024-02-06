@@ -1,4 +1,4 @@
-import Layout from "../Layout";
+import Layout from "../utils/Layout";
 import ChatsList from "../components/ChatsList";
 
 const Home: React.FC = () => {

@@ -38,13 +38,20 @@ class ChatActions {
 
             const success = await ChatController.createChat(chatData);
             if (success) {
-                res.status(201).json({ message: "Chat started successfully", chat: chatData });
-            } else {
-                res.status(500).json({ message: "Failed to start chat" });
+                res.status(201).json({
+                    message: "New chat started successfully",
+                    error: false,
+                    code: res.statusCode,
+                    results: chatData
+                });
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+            res.status(500).json({
+                message: "Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode
+            });
         }
     }
 
@@ -137,7 +144,7 @@ class ChatActions {
 
     // Action to get all past chats of a user
     static getChatsList = async (req: Req, res: Res): Promise<void> => {
-        const { userId }: { userId: string } = req.body;
+        const { userId } = req.params;
 
         if (!userId) {
             res.status(400).json({ message: "Invalid request" });
@@ -147,9 +154,14 @@ class ChatActions {
         const chatsList = await ChatController.getAllChatsOfUser(userId);
 
         if (chatsList) {
-            res.status(200).json({ message: "Chats list fetched successfully", chatsList: chatsList });
+            res.status(200).json({
+                message: "Chats list fetched successfully",
+                error: false,
+                code: res.statusCode,
+                results: chatsList
+            });
         } else {
-            res.status(500).json({ message: "Failed to get chats list" });
+            res.status(500).json({ message: "Failed to get chats list", error: true, code: res.statusCode });
         }
     }
 

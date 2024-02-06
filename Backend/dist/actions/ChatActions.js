@@ -46,15 +46,21 @@ ChatActions.startChat = (req, res) => __awaiter(void 0, void 0, void 0, function
         chatData.startAt = new Date();
         const success = yield ChatController_1.default.createChat(chatData);
         if (success) {
-            res.status(201).json({ message: "Chat started successfully", chat: chatData });
-        }
-        else {
-            res.status(500).json({ message: "Failed to start chat" });
+            res.status(201).json({
+                message: "New chat started successfully",
+                error: false,
+                code: res.statusCode,
+                results: chatData
+            });
         }
     }
     catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+        res.status(500).json({
+            message: "Facing issue at server end. Please try again later!",
+            error: true,
+            code: res.statusCode
+        });
     }
 });
 // Action to send a query in an ongoing chat
@@ -134,17 +140,22 @@ ChatActions.getResponseFromBot = (query) => __awaiter(void 0, void 0, void 0, fu
 });
 // Action to get all past chats of a user
 ChatActions.getChatsList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.body;
+    const { userId } = req.params;
     if (!userId) {
         res.status(400).json({ message: "Invalid request" });
         return;
     }
     const chatsList = yield ChatController_1.default.getAllChatsOfUser(userId);
     if (chatsList) {
-        res.status(200).json({ message: "Chats list fetched successfully", chatsList: chatsList });
+        res.status(200).json({
+            message: "Chats list fetched successfully",
+            error: false,
+            code: res.statusCode,
+            results: chatsList
+        });
     }
     else {
-        res.status(500).json({ message: "Failed to get chats list" });
+        res.status(500).json({ message: "Failed to get chats list", error: true, code: res.statusCode });
     }
 });
 // Action to delete a chat

@@ -1,17 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { SignUpPropType } from "../../utils/type";
 
-type propType = {
-  formData: {
-    email: string;
-    password: string;
-    confirmPassword: string;
-  };
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-};
 
-const SignupForm: React.FC<propType> = ({formData, handleChange, handleSubmit}) => {
+
+const SignupForm: React.FC<SignUpPropType> = ({formData, handleChange, handleSubmit}) => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center">
       <div className="max-w-md w-full space-y-8">
