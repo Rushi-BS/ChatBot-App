@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const DataEncryptor_1 = __importDefault(require("../helpers/DataEncryptor"));
 const Auth_1 = __importDefault(require("../helpers/Auth"));
+const jsonwebtoken_1 = require("jsonwebtoken"); // Importing 'jsonwebtoken' and 'TokenExpiredError'
 class Middleware {
-    constructor() {
-        this.decryptRequest = (req, res, next) => {
+    static decryptRequest(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
             try {
                 if (req.body && req.body.encryptedData) {
-                    const decryptedData = this.dataEncryptor.decrypt(req.body.encryptedData);
+                    const decryptedData = Middleware.dataEncryptor.decrypt(req.body.encryptedData);
                     console.log('decrypted data: ', decryptedData);
                     req.body.decryptedData = decryptedData; // Assuming the decrypted data is JSON-formatted
                 }
@@ -28,22 +29,29 @@ class Middleware {
             catch (error) {
                 res.status(400).send('Invalid encrypted data');
             }
-        };
-        this.jwtMiddleware = (req, res, next) => __awaiter(this, void 0, void 0, function* () {
-            const token = req.headers.authorization;
-            if (!token) {
-                return res.status(401).json({ Error: "Unauthorized - Missing token" });
+        });
+    }
+    static jwtMiddleware(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const tokenHeader = req.headers.authorization;
+            if (!tokenHeader) {
+                return res.status(401).json({ Error: 'Unauthorized - Missing token' });
             }
+            const token = tokenHeader.split(' ')[1];
             try {
                 const decoded = yield Auth_1.default.verifyToken(token);
                 req.user = decoded;
                 next();
             }
-            catch (error) {
-                return res.status(401).json({ Error: "Unauthorized - Invalid token" });
+            catch (tokenError) {
+                console.error('JWT Verification Error:', tokenError);
+                if (tokenError instanceof jsonwebtoken_1.TokenExpiredError) {
+                    return res.status(401).json({ Error: 'Unauthorized - Token expired' });
+                }
+                return res.status(401).json({ Error: 'Unauthorized - Invalid token' });
             }
         });
-        this.dataEncryptor = new DataEncryptor_1.default();
     }
 }
+Middleware.dataEncryptor = new DataEncryptor_1.default();
 exports.default = Middleware;

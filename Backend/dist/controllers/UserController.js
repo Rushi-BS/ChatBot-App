@@ -41,6 +41,19 @@ UserController.getUserByEmailAndPassword = (email, hashedPassword) => __awaiter(
         return undefined;
     }
 });
+//Method to get user by email
+UserController.getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield userRepo.findOne({
+            where: { email: email },
+        });
+        return user;
+    }
+    catch (err) {
+        console.error(err);
+        return undefined;
+    }
+});
 // Method to create a new user 
 UserController.createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {

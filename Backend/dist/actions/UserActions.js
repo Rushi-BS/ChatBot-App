@@ -23,7 +23,7 @@ _a = UserActions;
 UserActions.signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
-        const user = yield UserController_1.default.getUserByEmailAndPassword(email, password);
+        const user = yield UserController_1.default.getUserByEmail(email);
         if (user) {
             const isPasswordMatched = yield Auth_1.default.comparePasswords(password, user.hashedPassword);
             if (isPasswordMatched) {

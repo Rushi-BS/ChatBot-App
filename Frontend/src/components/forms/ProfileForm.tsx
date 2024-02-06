@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
 const ProfileForm: React.FC = () => {
-  // Initializing state for the profile information
   const [profileData, setProfileData] = useState({
     userName: "",
     phoneNo: "",
     location: "",
-    profilePhoto: null, // This will be handled separately since it's a file
+    profilePhoto: null, 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,13 +24,11 @@ const ProfileForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Handle the form submission, including file upload
     console.log("Profile Data to update: ", profileData);
-    // You'd typically send this data to your server here
   };
 
   return (
-    <div className=" bg-gray-50 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-50 flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-6 rounded-lg shadow-lg">
         <h2 className="text-center text-3xl font-extrabold text-gray-900">Edit Profile</h2>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

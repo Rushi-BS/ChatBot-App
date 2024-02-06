@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Signin from "./pages/SignIn";
 import Chat from "./pages/Chat";
 import Home from "./pages/Home";
+import { Toaster } from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/chat",
+    path: "/chat/:chatId",
     element: (
       <Chat />
     ),
@@ -46,6 +47,7 @@ const App: React.FC = () => {
   return (
     <>
       <RouterProvider router={router} />
+      <Toaster />
     </>
   );
 };
