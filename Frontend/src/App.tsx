@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import "./App.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ErrorPage from "./pages/Error";
@@ -8,13 +8,16 @@ import Signin from "./pages/SignIn";
 import Chat from "./pages/Chat";
 import Home from "./pages/Home";
 import { Toaster } from "react-hot-toast";
+import {
+  ChatDispatchContext,
+  ChatStateContext,
+} from "./components/context/globalContext";
+import chatReducer, { chatIntialState } from "./reducer/chatReducer";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <Home />
-    ),
+    element: <Home />,
     errorElement: <ErrorPage />,
   },
   {
@@ -27,15 +30,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/profile",
-    element: (
-        <Profile />
-    ),
+    element: <Profile />,
   },
   {
     path: "/chat/:chatId",
-    element: (
-      <Chat />
-    ),
+    element: <Chat />,
   },
   {
     path: "*",
@@ -44,9 +43,14 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
+  const [state, dispatch] = useReducer(chatReducer, chatIntialState);
   return (
     <>
-      <RouterProvider router={router} />
+      <ChatStateContext.Provider value={state}>
+        <ChatDispatchContext.Provider value={dispatch}>
+          <RouterProvider router={router} />
+        </ChatDispatchContext.Provider>
+      </ChatStateContext.Provider>
       <Toaster />
     </>
   );

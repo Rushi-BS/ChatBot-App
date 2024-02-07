@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ApiResponse, ChatType } from "../utils/type";
 import ApiHelper from "../utils/ApiHelper";
 import toast from "react-hot-toast";
+import { useChatDispatch, useChatState } from "./context/contextHooks";
 
 const apiHelper = new ApiHelper();
 
 const ChatsList: React.FC = () => {
   const navigate = useNavigate();
-  const [chats, setChats] = useState<Array<ChatType>>([]);
-  const userId = "3";
+  const state = useChatState();
+  const dispatch = useChatDispatch();
+  const userId = "3"; // Hardcoded user ID for now
 
   const fetchChatsList = async () => {
     try {
@@ -20,7 +22,7 @@ const ChatsList: React.FC = () => {
       const { results } = response.data;
       if (results) {
         // console.log("Chats list:", results);
-        setChats(results);
+        dispatch({ type: "SET_CHATS_LIST", payload: results });
       }
     } catch (error) {
       console.error("Error fetching chats list:", error);
@@ -38,10 +40,11 @@ const ChatsList: React.FC = () => {
           `/chat/${userId}/start`,
           reqBody
         );
-        console.log("Response:", response);
+        // console.log("Response:", response);
         const { results } = response.data;
         if (results) {
-          console.log(results);
+          dispatch({ type: "ADD_CHAT", payload: results });
+          dispatch({ type: "SET_CURRENT_CHAT", payload: results });
           navigate(`/chat/${results.id}`);
         }
       } else {
@@ -52,6 +55,11 @@ const ChatsList: React.FC = () => {
     }
   };
 
+  const openChat = (chat: ChatType) => {
+    dispatch({ type: "SET_CURRENT_CHAT", payload: chat });
+    navigate(`/chat/${chat.id}`);
+  }
+
   useEffect(() => {
     fetchChatsList();
   }, []);
@@ -61,10 +69,11 @@ const ChatsList: React.FC = () => {
       {/* List of user chats */}
       <div className="space-y-4">
         {/* Chat item */}
-        {chats.map((chat, index) => (
+        {state.chatsList.map((chat, index) => (
           <div
             key={index}
-            className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md"
+            className="flex items-center justify-between bg-white p-4 rounded-lg shadow-md hover:cursor-pointer hover:bg-gray-50 transition-all duration-200 ease-in-out"
+            onClick={() => openChat(chat)}
           >
             <div className="flex items-center space-x-2">
               <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center">
@@ -76,7 +85,9 @@ const ChatsList: React.FC = () => {
               </div>
             </div>
             <div>
-              <p className="text-gray-500">{new Date(chat.startAt).toLocaleTimeString()}</p>
+              <p className="text-gray-500">
+                {new Date(chat.startAt).toLocaleTimeString()}
+              </p>
             </div>
           </div>
         ))}

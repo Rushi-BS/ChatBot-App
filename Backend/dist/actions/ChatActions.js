@@ -96,11 +96,22 @@ ChatActions.sendQuery = (req, res) => __awaiter(void 0, void 0, void 0, function
             responseData.text = responseText;
             responseData.timestamp = new Date();
             yield ResponseController_1.default.saveResponse(responseData);
-            res.status(200).json({ message: "Received response successfully", queryData: queryData, responseData: responseData });
+            res.status(200).json({
+                message: "Received response successfully",
+                error: false,
+                code: res.statusCode,
+                results: {
+                    responseData: { id: responseData.id, text: responseData.text, timestamp: responseData.timestamp, sender: "bot" },
+                }
+            });
         }
         catch (error) {
             console.error(error.message);
-            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+            res.status(500).json({
+                message: "Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode
+            });
         }
     }
     else {
@@ -272,7 +283,8 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const messages = [];
         chat.queries.forEach(query => {
             const msg = {
-                type: '0',
+                id: parseInt(query.id),
+                sender: 'user',
                 text: query.text,
                 timestamp: query.timestamp
             };
@@ -280,7 +292,8 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
         chat.responses.forEach(response => {
             const msg = {
-                type: '1',
+                id: parseInt(response.id),
+                sender: 'bot',
                 text: response.text,
                 timestamp: response.timestamp
             };
@@ -290,10 +303,12 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
         console.log(messages);
         if (messages.length > 0) {
-            res.status(200).json({ message: "Chat history fetched successfully", chatHistory: messages });
-        }
-        else {
-            res.status(500).json({ message: "Failed to get chat history" });
+            res.status(200).json({
+                message: "Chat history fetched successfully",
+                error: false,
+                code: res.statusCode,
+                results: messages
+            });
         }
     }
     catch (error) {

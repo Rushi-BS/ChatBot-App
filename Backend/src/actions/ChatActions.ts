@@ -96,10 +96,21 @@ class ChatActions {
                 responseData.timestamp = new Date();
 
                 await ResponseController.saveResponse(responseData);
-                res.status(200).json({ message: "Received response successfully", queryData: queryData, responseData: responseData });
+                res.status(200).json({
+                    message: "Received response successfully",
+                    error: false,
+                    code: res.statusCode,
+                    results: {
+                        responseData: { id: responseData.id, text: responseData.text, timestamp: responseData.timestamp, sender: "bot" },
+                    }
+                });
             } catch (error) {
                 console.error(error.message);
-                res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+                res.status(500).json({
+                    message: "Facing issue at server end. Please try again later!",
+                    error: true,
+                    code: res.statusCode
+                });
             }
         } else {
             res.status(500).json({ message: "Failed to send query" });
@@ -293,9 +304,10 @@ class ChatActions {
             }
 
             type messageType = {
-                type: '0' | '1', // type = 0 for query, 1 for response
-                text: string,
-                timestamp: Date
+                id: number;
+                sender: "user" | "bot" | "agent";
+                text: string;
+                timestamp: Date;
             }
 
             // Combine queries and responses into a single array.
@@ -303,7 +315,8 @@ class ChatActions {
 
             chat.queries.forEach(query => {
                 const msg: messageType = {
-                    type: '0',
+                    id: parseInt(query.id),
+                    sender: 'user',
                     text: query.text,
                     timestamp: query.timestamp
                 }
@@ -312,7 +325,8 @@ class ChatActions {
 
             chat.responses.forEach(response => {
                 const msg: messageType = {
-                    type: '1',
+                    id: parseInt(response.id),
+                    sender: 'bot',
                     text: response.text,
                     timestamp: response.timestamp
                 }
@@ -325,9 +339,12 @@ class ChatActions {
             console.log(messages);
 
             if (messages.length > 0) {
-                res.status(200).json({ message: "Chat history fetched successfully", chatHistory: messages });
-            } else {
-                res.status(500).json({ message: "Failed to get chat history" });
+                res.status(200).json({
+                    message: "Chat history fetched successfully",
+                    error: false,
+                    code: res.statusCode,
+                    results: messages
+                });
             }
         } catch (error) {
             console.error(error.message);
