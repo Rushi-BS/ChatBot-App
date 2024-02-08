@@ -62,7 +62,7 @@ const Routes = [
     {
         method: 'get',
         route: '/chat/:chatId/history',
-        action: ChatActions_1.default.getChatHistory,
+        action: ChatActions_1.default.getMessagesHistory,
         middleware: Middleware_1.default,
     },
     {

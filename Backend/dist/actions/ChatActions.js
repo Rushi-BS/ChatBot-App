@@ -162,7 +162,7 @@ ChatActions.getChatsList = (req, res) => __awaiter(void 0, void 0, void 0, funct
             message: "Chats list fetched successfully",
             error: false,
             code: res.statusCode,
-            results: chatsList
+            results: chatsList.filter(chat => !chat.isDeleted)
         });
     }
     else {
@@ -267,7 +267,7 @@ ChatActions.chatFeedback = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 // Action to get chat history
-ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+ChatActions.getMessagesHistory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { chatId } = req.params;
         if (!chatId) {
@@ -275,6 +275,7 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
             return;
         }
         const chat = yield ChatController_1.default.getChatByIdWithRelations(chatId);
+        console.log(chat);
         if (!chat) {
             res.status(404).json({ message: "Chat not found" });
             return;
@@ -283,7 +284,7 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         const messages = [];
         chat.queries.forEach(query => {
             const msg = {
-                id: parseInt(query.id),
+                id: 'q' + parseInt(query.id),
                 sender: 'user',
                 text: query.text,
                 timestamp: query.timestamp
@@ -292,7 +293,7 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         });
         chat.responses.forEach(response => {
             const msg = {
-                id: parseInt(response.id),
+                id: 'r' + parseInt(response.id),
                 sender: 'bot',
                 text: response.text,
                 timestamp: response.timestamp
@@ -304,7 +305,15 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
         console.log(messages);
         if (messages.length > 0) {
             res.status(200).json({
-                message: "Chat history fetched successfully",
+                message: "Messages history fetched successfully",
+                error: false,
+                code: res.statusCode,
+                results: messages
+            });
+        }
+        else {
+            res.status(200).json({
+                message: "No previous messages found",
                 error: false,
                 code: res.statusCode,
                 results: messages
@@ -313,7 +322,11 @@ ChatActions.getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
     catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+        res.status(500).json({
+            message: "Facing issue at server end. Please try again later!",
+            error: true,
+            code: res.statusCode
+        });
     }
 });
 exports.default = ChatActions;

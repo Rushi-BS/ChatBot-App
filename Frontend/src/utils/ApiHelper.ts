@@ -26,8 +26,6 @@ class ApiHelper {
                 status: response.status,
             };
         } catch (error) {
-            // Handle error
-            // You can customize this part to handle errors more gracefully
             throw new Error('An error occurred while fetching data.');
         }
     }
@@ -41,13 +39,22 @@ class ApiHelper {
                 status: response.status,
             };
         } catch (error) {
-            // Handle error
-            // You can customize this part to handle errors more gracefully
             throw new Error('An error occurred while posting data.');
         }
     }
 
-    // Add more methods for other types of requests (PUT, DELETE, etc.) as needed
+    public async delete<T>(url: string): Promise<ApiResponse<T>> {
+        try {
+            const response: AxiosResponse<T> = await this.axiosInstance.delete<T>(url);
+            return {
+                data: response.data,
+                status: response.status,
+            };
+        } catch (error) {
+            throw new Error('An error occurred while deleting data.');
+        }
+    }
+
 }
 
 export default ApiHelper;

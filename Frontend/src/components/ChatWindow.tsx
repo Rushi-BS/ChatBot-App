@@ -19,15 +19,15 @@ const ChatWindow: React.FC = () => {
         return;
       }
       console.log(state.currentChat);
-      
+
       const response: ApiResponse<Array<MessageType>> = await apiHelper.get(
         `/chat/${state.currentChat?.id}/history`
       );
       console.log(response);
-      
+
       const { results } = response.data;
+      console.log("Chat history:", results);
       if (results) {
-        console.log("Chat history:", results);
         dispatch({ type: "SET_MESSAGES", payload: results });
       }
     } catch (error) {
@@ -68,6 +68,7 @@ const ChatWindow: React.FC = () => {
     } catch (error) {
       // console.error("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -86,8 +87,8 @@ const ChatWindow: React.FC = () => {
             {state.currentChat?.chatName}
           </h2>
         </div>
-        <div className="flex flex-col overflow-auto max-h-[460px]">
-          {state.messages.map((message) => (
+        <div className="flex flex-col overflow-auto max-h-[460px] h-[460px]">
+          {state.messages.length > 0 ? state.messages.map((message) => (
             <div
               key={message.id}
               className={`p-2 my-2 rounded-lg ${
@@ -99,7 +100,7 @@ const ChatWindow: React.FC = () => {
               {message.text}
               {/* <span className="text-sm">{"10:00 AM"}</span> */}
             </div>
-          ))}
+          )) : <div className="grow flex justify-center items-center text-gray-400">No message history</div>}
           {loading && (
             <div className="flex justify-center items-center">
               <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-500"></div>

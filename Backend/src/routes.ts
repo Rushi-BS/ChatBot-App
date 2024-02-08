@@ -63,7 +63,7 @@ const Routes: Array<{
     {
       method: 'get',
       route: '/chat/:chatId/history',
-      action: ChatActions.getChatHistory,
+      action: ChatActions.getMessagesHistory,
       middleware: jwtMiddleware,
     },
     {

@@ -9,7 +9,7 @@ export type ApiResponse<T> = {
 };
 
 export type MessageType = {
-    id: number;
+    id: string | number;
     sender: "user" | "bot" | "agent";
     text: string;
     timestamp: Date;

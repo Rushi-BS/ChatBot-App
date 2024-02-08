@@ -169,7 +169,7 @@ class ChatActions {
                 message: "Chats list fetched successfully",
                 error: false,
                 code: res.statusCode,
-                results: chatsList
+                results: chatsList.filter(chat => !chat.isDeleted)
             });
         } else {
             res.status(500).json({ message: "Failed to get chats list", error: true, code: res.statusCode });
@@ -287,7 +287,7 @@ class ChatActions {
     }
 
     // Action to get chat history
-    static getChatHistory = async (req: Req, res: Res): Promise<void> => {
+    static getMessagesHistory = async (req: Req, res: Res): Promise<void> => {
         try {
             const { chatId } = req.params;
 
@@ -297,14 +297,15 @@ class ChatActions {
             }
 
             const chat = await ChatController.getChatByIdWithRelations(chatId);
-
+            console.log(chat);
+            
             if (!chat) {
                 res.status(404).json({ message: "Chat not found" });
                 return;
             }
 
             type messageType = {
-                id: number;
+                id: string | number;
                 sender: "user" | "bot" | "agent";
                 text: string;
                 timestamp: Date;
@@ -315,7 +316,7 @@ class ChatActions {
 
             chat.queries.forEach(query => {
                 const msg: messageType = {
-                    id: parseInt(query.id),
+                    id: 'q' + parseInt(query.id),
                     sender: 'user',
                     text: query.text,
                     timestamp: query.timestamp
@@ -325,7 +326,7 @@ class ChatActions {
 
             chat.responses.forEach(response => {
                 const msg: messageType = {
-                    id: parseInt(response.id),
+                    id: 'r' + parseInt(response.id),
                     sender: 'bot',
                     text: response.text,
                     timestamp: response.timestamp
@@ -340,7 +341,15 @@ class ChatActions {
 
             if (messages.length > 0) {
                 res.status(200).json({
-                    message: "Chat history fetched successfully",
+                    message: "Messages history fetched successfully",
+                    error: false,
+                    code: res.statusCode,
+                    results: messages
+                });
+            }
+            else {
+                res.status(200).json({
+                    message: "No previous messages found",
                     error: false,
                     code: res.statusCode,
                     results: messages
@@ -348,7 +357,11 @@ class ChatActions {
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+            res.status(500).json({ 
+                message: "Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode
+            });
         }
     }
 }
