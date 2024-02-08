@@ -37,6 +37,26 @@ export type ChatActionType = {
     payload?: ChatType | Array<ChatType> | MessageType | Array<MessageType>;
 };
 
+export type UserType = {
+    email: string;
+    id: string;
+    name: string;
+};
+
+export type UserStateType = {
+    isAuthenticated: boolean;
+    user: UserType | null;
+};
+
+export type UserActionType = {
+    type: "LOGIN" | "LOGOUT" | "UPDATE_USER";
+    payload?: {
+        email: string;
+        id: string;
+        name: string;
+    };
+};
+
 export type SignUpPropType = {
     formData: {
         email: string;
@@ -56,3 +76,9 @@ export type SignInPropType = {
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
+
+export type PopupProps = {
+    children: React.ReactNode;
+    isOpen: boolean;
+    onClose: () => void;
+  };

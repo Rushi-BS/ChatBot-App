@@ -166,7 +166,11 @@ ChatActions.getChatsList = (req, res) => __awaiter(void 0, void 0, void 0, funct
         });
     }
     else {
-        res.status(500).json({ message: "Failed to get chats list", error: true, code: res.statusCode });
+        res.status(500).json({
+            message: "Facing issue at server end. Please try again later!",
+            error: true,
+            code: res.statusCode
+        });
     }
 });
 // Action to delete a chat
@@ -183,10 +187,18 @@ ChatActions.deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
     const success = yield ChatController_1.default.deleteChat(chatId);
     if (success) {
-        res.status(200).json({ message: "Chat deleted successfully" });
+        res.status(200).json({
+            message: "Chat deleted successfully",
+            error: false,
+            code: res.statusCode,
+        });
     }
     else {
-        res.status(500).json({ message: "Failed to delete chat" });
+        res.status(500).json({
+            message: "Facing issue at server end. Please try again later!",
+            error: true,
+            code: res.statusCode
+        });
     }
 });
 // Action to end a chat
@@ -204,10 +216,18 @@ ChatActions.endChat = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     chat.endAt = new Date();
     const success = yield ChatController_1.default.updateChat(chatId, chat);
     if (success) {
-        res.status(200).json({ message: "Chat ended successfully" });
+        res.status(200).json({
+            message: "Chat ended successfully",
+            error: false,
+            code: res.statusCode,
+        });
     }
     else {
-        res.status(500).json({ message: "Failed to end chat" });
+        res.status(500).json({
+            message: "Facing issue at server end. Please try again later!",
+            error: true,
+            code: res.statusCode
+        });
     }
 });
 // Action for chat rating
@@ -315,8 +335,7 @@ ChatActions.getMessagesHistory = (req, res) => __awaiter(void 0, void 0, void 0,
             res.status(200).json({
                 message: "No previous messages found",
                 error: false,
-                code: res.statusCode,
-                results: messages
+                code: res.statusCode
             });
         }
     }

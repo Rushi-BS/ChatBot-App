@@ -172,7 +172,11 @@ class ChatActions {
                 results: chatsList.filter(chat => !chat.isDeleted)
             });
         } else {
-            res.status(500).json({ message: "Failed to get chats list", error: true, code: res.statusCode });
+            res.status(500).json({
+                message: "Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode
+            });
         }
     }
 
@@ -194,9 +198,17 @@ class ChatActions {
 
         const success = await ChatController.deleteChat(chatId);
         if (success) {
-            res.status(200).json({ message: "Chat deleted successfully" });
+            res.status(200).json({
+                message: "Chat deleted successfully",
+                error: false,
+                code: res.statusCode,
+            });
         } else {
-            res.status(500).json({ message: "Failed to delete chat" });
+            res.status(500).json({
+                message: "Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode
+            });
         }
     }
 
@@ -220,9 +232,17 @@ class ChatActions {
 
         const success = await ChatController.updateChat(chatId, chat);
         if (success) {
-            res.status(200).json({ message: "Chat ended successfully" });
+            res.status(200).json({ 
+                message: "Chat ended successfully",
+                error: false,
+                code: res.statusCode,
+            });
         } else {
-            res.status(500).json({ message: "Failed to end chat" });
+            res.status(500).json({ 
+                message: "Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode
+            });
         }
     }
 
@@ -298,7 +318,7 @@ class ChatActions {
 
             const chat = await ChatController.getChatByIdWithRelations(chatId);
             console.log(chat);
-            
+
             if (!chat) {
                 res.status(404).json({ message: "Chat not found" });
                 return;
@@ -351,13 +371,12 @@ class ChatActions {
                 res.status(200).json({
                     message: "No previous messages found",
                     error: false,
-                    code: res.statusCode,
-                    results: messages
+                    code: res.statusCode
                 });
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).json({ 
+            res.status(500).json({
                 message: "Facing issue at server end. Please try again later!",
                 error: true,
                 code: res.statusCode

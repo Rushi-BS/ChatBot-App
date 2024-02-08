@@ -11,8 +11,11 @@ import { Toaster } from "react-hot-toast";
 import {
   ChatDispatchContext,
   ChatStateContext,
-} from "./components/context/globalContext";
+  UserDispatchContext,
+  UserStateContext,
+} from "./context/globalContext";
 import chatReducer, { chatIntialState } from "./reducer/chatReducer";
+import userReducer, { userInitialState } from "./reducer/userReducer";
 
 const router = createBrowserRouter([
   {
@@ -43,14 +46,20 @@ const router = createBrowserRouter([
 ]);
 
 const App: React.FC = () => {
-  const [state, dispatch] = useReducer(chatReducer, chatIntialState);
+  const [userState, userDispatch] = useReducer(userReducer, userInitialState);
+  const [chatState, chatDispatch] = useReducer(chatReducer, chatIntialState);
+
   return (
     <>
-      <ChatStateContext.Provider value={state}>
-        <ChatDispatchContext.Provider value={dispatch}>
-          <RouterProvider router={router} />
-        </ChatDispatchContext.Provider>
-      </ChatStateContext.Provider>
+      <UserStateContext.Provider value={userState}>
+        <UserDispatchContext.Provider value={userDispatch}>
+          <ChatStateContext.Provider value={chatState}>
+            <ChatDispatchContext.Provider value={chatDispatch}>
+              <RouterProvider router={router} />
+            </ChatDispatchContext.Provider>
+          </ChatStateContext.Provider>
+        </UserDispatchContext.Provider>
+      </UserStateContext.Provider>
       <Toaster />
     </>
   );
