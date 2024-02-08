@@ -1,10 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-
-// Define an interface for your expected response to enforce type checking
-interface ApiResponse<T> {
-    data: T;
-    status: number;
-}
+import { ApiResponse } from './type';
 
 // API Helper Class
 class ApiHelper {
@@ -21,13 +16,8 @@ class ApiHelper {
     public async get<T>(url: string, params?: object): Promise<ApiResponse<T>> {
         try {
             const response: AxiosResponse<T> = await this.axiosInstance.get<T>(url, { params });
-            return {
-                data: response.data,
-                status: response.status,
-            };
+            return response as ApiResponse<T>;  
         } catch (error) {
-            // Handle error
-            // You can customize this part to handle errors more gracefully
             throw new Error('An error occurred while fetching data.');
         }
     }
@@ -36,18 +26,22 @@ class ApiHelper {
     public async post<T>(url: string, data?: object): Promise<ApiResponse<T>> {
         try {
             const response: AxiosResponse<T> = await this.axiosInstance.post<T>(url, data);
-            return {
-                data: response.data,
-                status: response.status,
-            };
+            return response as ApiResponse<T>;
         } catch (error) {
-            // Handle error
-            // You can customize this part to handle errors more gracefully
             throw new Error('An error occurred while posting data.');
         }
     }
 
-    // Add more methods for other types of requests (PUT, DELETE, etc.) as needed
+    // Method to perform DELETE requests
+    public async delete<T>(url: string): Promise<ApiResponse<T>> {
+        try {
+            const response: AxiosResponse<T> = await this.axiosInstance.delete<T>(url);
+            return response as ApiResponse<T>;
+        } catch (error) {
+            throw new Error('An error occurred while deleting data.');
+        }
+    }
+
 }
 
 export default ApiHelper;

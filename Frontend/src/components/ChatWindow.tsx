@@ -1,70 +1,166 @@
-import React, { useState } from "react";
-import { MessageType } from "../utils/type";
+import React, { useEffect, useState } from "react";
+import { ApiResponse, MessageType } from "../utils/type";
+import ApiHelper from "../utils/ApiHelper";
+import toast from "react-hot-toast";
+import { useChatDispatch, useChatState } from "../context/contextHooks";
+import { useNavigate } from "react-router-dom";
+import RatingForm from "./forms/RatingForm";
+import Popup from "./Popup";
+import Loader from "./Loader";
 
-const dummyMessages: Array<MessageType> = [
-  { id: 1, sender: "bot", text: "Dummy message 1 from user" },
-  { id: 2, sender: "user", text: "Dummy message 2 from user" },
-  { id: 3, sender: "user", text: "Dummy message 3 from bot" },
-  { id: 4, sender: "user", text: "Dummy message 4 from support" },
-  { id: 5, sender: "support", text: "Dummy message 5 from support" },
-  { id: 6, sender: "support", text: "Dummy message 6 from user" },
-  { id: 7, sender: "bot", text: "Dummy message 7 from support" },
-  { id: 8, sender: "bot", text: "Dummy message 8 from bot" },
-  { id: 9, sender: "bot", text: "Dummy message 9 from bot" },
-  { id: 10, sender: "support", text: "Dummy message 10 from bot" },
-  { id: 11, sender: "user", text: "Dummy message 11 from user" },
-  { id: 12, sender: "bot", text: "Dummy message 12 from support" },
-  { id: 13, sender: "user", text: "Dummy message 13 from support" },
-  { id: 14, sender: "user", text: "Dummy message 14 from support" },
-  { id: 15, sender: "user", text: "Dummy message 15 from user" },
-  { id: 16, sender: "user", text: "Dummy message 16 from bot" },
-  { id: 17, sender: "bot", text: "Dummy message 17 from user" },
-  { id: 18, sender: "support", text: "Dummy message 18 from bot" },
-  { id: 19, sender: "user", text: "Dummy message 19 from bot" },
-  { id: 20, sender: "support", text: "Dummy message 20 from support" },
-];
+const apiHelper = new ApiHelper();
 
 const ChatWindow: React.FC = () => {
-  const [messages, setMessages] = useState<MessageType[]>(dummyMessages);
+  const navigate = useNavigate();
+  const state = useChatState();
+  const dispatch = useChatDispatch();
   const [newMessage, setNewMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showRatingPopup, setShowRatingPopup] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const fetchChatMessages = async () => {
+    try {
+      if (!state.currentChat) {
+        // console.log("No chat selected");
+        return;
+      }
+      // console.log(state.currentChat);
+
+      const response: ApiResponse<Array<MessageType>> = await apiHelper.get(
+        `/chat/${state.currentChat?.id}/history`
+      );
+      // console.log(response);
+
+      const { results } = response.data;
+      // console.log("Chat history:", results);
+      if (results) {
+        dispatch({ type: "SET_MESSAGES", payload: results });
+      } else {
+        dispatch({ type: "SET_MESSAGES", payload: [] });
+      }
+    } catch (error) {
+      toast.error("Error getting chat history");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    const message: MessageType = {
-      id: messages.length + 1, // Simple ID generation
-      sender: "user", // Assuming the new message is always from the user
+    const userMessage: MessageType = {
+      id: state.messages.length + 1,
+      sender: "user",
       text: newMessage,
+      timestamp: new Date(),
     };
 
-    setMessages([...messages, message]);
-    setNewMessage(""); // Clear input after sending
+    dispatch({ type: "ADD_MESSAGE", payload: userMessage });
+    setNewMessage("");
+
+    try {
+      setLoading(true);
+      const reqBody = {
+        queryText: newMessage,
+      };
+      const response: ApiResponse<{ responseData: MessageType }> =
+        await apiHelper.post(`/chat/${state.currentChat?.id}/send`, reqBody);
+
+      // console.log(response);
+      const { results } = response.data;
+      if (results && results.responseData) {
+        const { responseData } = results;
+        // Update messages to include the bot's reply
+        dispatch({ type: "ADD_MESSAGE", payload: responseData });
+      }
+    } catch (error) {
+      // console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const endChat = async () => {
+    try {
+      setLoading(true);
+      await apiHelper.post(`/chat/${state.currentChat?.id}/end`, {});
+      toast.success("Chat ended successfully.");
+      // navigate("/");
+    } catch (error) {
+      toast.error("Failed to end chat. Please try again.");
+    } finally {
+      setLoading(false);
+      setShowRatingPopup(true);
+    }
+  };
+
+  const handleRatingSubmit = async (rating: number) => {
+    try {
+      setLoading(true);
+      await apiHelper.post(`/chat/${state.currentChat?.id}/rating`, { rating });
+      toast.success("Thanks for your feedback!");
+    } catch (error) {
+      toast.error("Failed to submit feedback. Please try again.");
+    } finally {
+      setLoading(false);
+      setShowRatingPopup(false);
+      navigate("/");
+    }
+  };
+
+  useEffect(() => {
+    fetchChatMessages();
+  }, [state.currentChat]);
 
   return (
     <div className="bg-gray-50 flex flex-col grow w-4/5 md:w-1/2 mx-auto">
-      <div className="grow p-4 bg-white rounded-lg shadow-md">
-        <div className="flex justify-center items-center space-x-2 p-2 border-b border-indigo-00">
-          <div className="w-6 h-6 p-5 bg-indigo-500 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold text-lg">B</span>
-          </div>
-          <h2 className="text-xl font-semibold">Chat Name</h2>
-        </div>
-        <div className="flex flex-col overflow-auto max-h-[460px]">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`p-2 my-2 rounded-lg ${
-                message.sender === "user"
-                  ? "bg-indigo-500 text-white self-end"
-                  : "bg-white text-gray-900 self-start"
-              } shadow`}
-            >
-              {message.text}
-              {/* <span className="text-sm">{"10:00 AM"}</span> */}
+      <div className="grow bg-white rounded-lg shadow-md">
+        <div className="flex justify-between items-center p-5 border-b border-indigo-500 shadow-xl">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center p-4">
+              <span className="text-white font-semibold text-lg">B</span>
             </div>
-          ))}
+            <h2 className="text-xl font-semibold">
+              {state.currentChat?.chatName}
+            </h2>
+          </div>
+          {!state.currentChat?.endAt ? (
+            <button
+              onClick={endChat}
+              className="text-red-500 hover:text-red-700 font-semibold py-2 rounded-md"
+            >
+              End Chat
+            </button>
+          ) : (
+            <div className="text-sm text-gray-500">
+              Ended at{" "}
+              {new Date(state.currentChat.endAt).toLocaleTimeString() +
+                " on " +
+                new Date(state.currentChat.endAt).toLocaleDateString()}
+            </div>
+          )}
+        </div>
+        <div className="p-4 flex flex-col overflow-auto max-h-[460px] h-[460px]">
+          {state.messages.length > 0 ? (
+            state.messages.map((message) => (
+              <div
+                key={message.id}
+                className={`p-2 my-2 rounded-lg ${
+                  message.sender === "user"
+                    ? "bg-indigo-500 text-white self-end"
+                    : "bg-white text-gray-900 self-start"
+                } shadow`}
+              >
+                {message.text}
+                {/* <span className="text-sm">{"10:00 AM"}</span> */}
+              </div>
+            ))
+          ) : (
+            <div className="grow flex justify-center items-center text-gray-400">
+              No messages history
+            </div>
+          )}
+          {loading && <Loader />}
         </div>
       </div>
       <form onSubmit={handleSubmit} className="mt-4">
@@ -75,15 +171,28 @@ const ChatWindow: React.FC = () => {
             placeholder="Type your message here..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
+            disabled={state.currentChat?.endAt ? true : false}
           />
           <button
             type="submit"
-            className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-lg"
+            className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-3 px-4 rounded-md shadow-lg disabled:bg-gray-400"
+            disabled={state.currentChat?.endAt ? true : false}
           >
             Send
           </button>
         </div>
       </form>
+      {
+        <Popup
+          isOpen={showRatingPopup}
+          onClose={() => setShowRatingPopup(false)}
+        >
+          <div className="text-center text-lg font-medium mb-1">
+            Rate Our Chat Bot Support
+          </div>
+          <RatingForm onRatingSubmit={handleRatingSubmit} />
+        </Popup>
+      }
     </div>
   );
 };

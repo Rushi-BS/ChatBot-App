@@ -9,9 +9,10 @@ export type ApiResponse<T> = {
 };
 
 export type MessageType = {
-    id: number;
-    sender: "user" | "bot" | "support";
+    id: string | number;
+    sender: "user" | "bot" | "agent";
     text: string;
+    timestamp: Date;
 };
 
 export type ChatType = {
@@ -23,6 +24,37 @@ export type ChatType = {
     isDeleted: boolean;
     rating: 0 | 1 | 2 | 3 | 4 | 5 | null;
     startAt: Date;
+};
+
+export type ChatStateType = {
+    chatsList: Array<ChatType>;
+    currentChat: ChatType | null;
+    messages: Array<MessageType>;
+};
+
+export type ChatActionType = {
+    type: "SET_CURRENT_CHAT" | "SET_CHATS_LIST" | "SET_MESSAGES" | "ADD_CHAT" | "ADD_MESSAGE" | "DELETE_CHAT";
+    payload?: ChatType | Array<ChatType> | MessageType | Array<MessageType>;
+};
+
+export type UserType = {
+    email: string;
+    id: string;
+    name: string;
+};
+
+export type UserStateType = {
+    isAuthenticated: boolean;
+    user: UserType | null;
+};
+
+export type UserActionType = {
+    type: "LOGIN" | "LOGOUT" | "UPDATE_USER";
+    payload?: {
+        email: string;
+        id: string;
+        name: string;
+    };
 };
 
 export type SignUpPropType = {
@@ -44,3 +76,9 @@ export type SignInPropType = {
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 };
+
+export type PopupProps = {
+    children: React.ReactNode;
+    isOpen: boolean;
+    onClose: () => void;
+  };

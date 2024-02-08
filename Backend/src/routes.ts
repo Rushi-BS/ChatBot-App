@@ -19,7 +19,7 @@ const Routes: Array<{
       action: UserActions.signUp,
     },
     {
-      method: 'put',
+      method: 'post',
       route: '/user/:userId/updateProfile',
       action: UserActions.updateUserProfile,
       middleware: jwtMiddleware,
@@ -49,7 +49,7 @@ const Routes: Array<{
       middleware: jwtMiddleware,
     },
     {
-      method: 'put',
+      method: 'post',
       route: '/chat/:chatId/end',
       action: ChatActions.endChat,
       middleware: jwtMiddleware,
@@ -63,7 +63,7 @@ const Routes: Array<{
     {
       method: 'get',
       route: '/chat/:chatId/history',
-      action: ChatActions.getChatHistory,
+      action: ChatActions.getMessagesHistory,
       middleware: jwtMiddleware,
     },
     {

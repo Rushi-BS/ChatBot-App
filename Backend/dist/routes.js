@@ -18,7 +18,7 @@ const Routes = [
         action: UserActions_1.default.signUp,
     },
     {
-        method: 'put',
+        method: 'post',
         route: '/user/:userId/updateProfile',
         action: UserActions_1.default.updateUserProfile,
         middleware: Middleware_1.default,
@@ -48,7 +48,7 @@ const Routes = [
         middleware: Middleware_1.default,
     },
     {
-        method: 'put',
+        method: 'post',
         route: '/chat/:chatId/end',
         action: ChatActions_1.default.endChat,
         middleware: Middleware_1.default,
@@ -62,7 +62,7 @@ const Routes = [
     {
         method: 'get',
         route: '/chat/:chatId/history',
-        action: ChatActions_1.default.getChatHistory,
+        action: ChatActions_1.default.getMessagesHistory,
         middleware: Middleware_1.default,
     },
     {
