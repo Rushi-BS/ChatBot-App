@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ApiResponse, MessageType } from "../utils/type";
 import ApiHelper from "../utils/ApiHelper";
 import toast from "react-hot-toast";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import RatingForm from "./forms/RatingForm";
 import Popup from "./Popup";
 import Loader from "./Loader";
+import { IoChevronBackSharp, IoCloseCircle } from "react-icons/io5";
 
 const apiHelper = new ApiHelper();
 
@@ -17,6 +18,7 @@ const ChatWindow: React.FC = () => {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showRatingPopup, setShowRatingPopup] = useState(false);
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const fetchChatMessages = async () => {
     try {
@@ -108,15 +110,35 @@ const ChatWindow: React.FC = () => {
     }
   };
 
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "instant" });
+    }
+  };
+  
   useEffect(() => {
     fetchChatMessages();
+
+
+    scrollToBottom();
   }, [state.currentChat]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [state.messages]);
+
 
   return (
     <div className="bg-gray-50 flex flex-col grow w-4/5 md:w-1/2 mx-auto">
       <div className="grow bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center p-5 border-b border-indigo-500 shadow-xl">
           <div className="flex items-center space-x-2">
+            <div>
+              <IoChevronBackSharp
+                className="text-bold text-indigo-500 hover:text-indigo-700 cursor-pointer"
+                onClick={() => navigate("/")}
+              />
+            </div>
             <div className="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center p-4">
               <span className="text-white font-semibold text-lg">B</span>
             </div>
@@ -142,9 +164,10 @@ const ChatWindow: React.FC = () => {
         </div>
         <div className="p-4 flex flex-col overflow-auto max-h-[460px] h-[460px]">
           {state.messages.length > 0 ? (
-            state.messages.map((message) => (
+            state.messages.map((message, index) => (
               <div
                 key={message.id}
+                ref={index === state.messages.length - 1 ? messagesEndRef : null} // Add this line
                 className={`p-2 my-2 rounded-lg ${
                   message.sender === "user"
                     ? "bg-indigo-500 text-white self-end"
@@ -187,8 +210,16 @@ const ChatWindow: React.FC = () => {
           isOpen={showRatingPopup}
           onClose={() => setShowRatingPopup(false)}
         >
-          <div className="text-center text-lg font-medium mb-1">
-            Rate Our Chat Bot Support
+          <div className="relative">
+            <div className="absolute top-[5%] right-[2%]">
+              <IoCloseCircle
+                className="text-2xl text-red-500 hover:text-red-700 cursor-pointer"
+                onClick={() => navigate("/")}
+              />
+            </div>
+            <div className="text-center text-lg font-medium mb-1">
+              Rate Our Chat Bot Support
+            </div>
           </div>
           <RatingForm onRatingSubmit={handleRatingSubmit} />
         </Popup>

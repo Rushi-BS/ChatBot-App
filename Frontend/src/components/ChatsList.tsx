@@ -48,7 +48,7 @@ const ChatsList: React.FC = () => {
           dispatch({ type: "SET_CURRENT_CHAT", payload: results });
           navigate(`/chat`);
         }
-      } else if (chatName === ""){
+      } else if (chatName === "") {
         toast.error("Chat name cannot be empty");
       }
     } catch (error) {
@@ -63,6 +63,7 @@ const ChatsList: React.FC = () => {
 
   const deleteChat = async (chat: ChatType, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevents the openChat function from being triggered
+    if (!window.confirm("Are you sure you want to delete this chat?")) return;
     try {
       await apiHelper.delete(`/chat/${chat.id}/delete`);
       dispatch({ type: "DELETE_CHAT", payload: chat });
@@ -85,7 +86,9 @@ const ChatsList: React.FC = () => {
         {state.chatsList.map((chat, index) => (
           <div
             key={index}
-            className={`flex items-center justify-between ${!chat.endAt ? 'bg-white' : 'bg-gray-300 text-gray-500'} p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-200 transition-all duration-200 ease-in-out`}
+            className={`flex items-center justify-between ${
+              !chat.endAt ? "bg-white" : "bg-gray-300 text-gray-500"
+            } p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-200 transition-all duration-200 ease-in-out`}
             onClick={() => openChat(chat)}
           >
             <div className="flex items-center space-x-2">
@@ -98,7 +101,9 @@ const ChatsList: React.FC = () => {
               </div>
             </div>
             <div className="flex justify-center items-center space-x-2">
-              <p className={`${!chat.endAt ? 'text-gray-400' : 'text-gray-500'}` }>
+              <p
+                className={`${!chat.endAt ? "text-gray-400" : "text-gray-500"}`}
+              >
                 {new Date(chat.startAt).toLocaleTimeString()}
               </p>
               <button
