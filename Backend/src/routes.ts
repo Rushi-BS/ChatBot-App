@@ -78,12 +78,12 @@ const Routes: Array<{
       action: ChatActions.chatFeedback,
       middleware: jwtMiddleware,
     },
-    {
-      method: 'post',
-      route: '/user/logout',
-      action: UserActions.logout,
-      middleware: jwtMiddleware,
-    },
+    // {
+    //   method: 'post',
+    //   route: '/user/logout',
+    //   action: UserActions.logout,
+    //   middleware: jwtMiddleware,
+    // },
   ];
 
 export default Routes;

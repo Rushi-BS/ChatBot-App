@@ -20,14 +20,20 @@ class ChatActions {
             const { chatName }: { chatName: string } = req.body;
 
             if (!userId || !chatName) {
-                res.status(400).json({ message: "Invalid request" });
+                res.status(400).json({ 
+                    message: "Invalid request",
+                    error: true,
+                    code: res.statusCode });
                 return;
             }
 
             const user = await UserController.getUserById(userId);
 
             if (!user) {
-                res.status(404).json({ message: "User not found" });
+                res.status(404).json({ 
+                    message: "User not found",
+                    error: true, 
+                    code: res.statusCode });
                 return;
             }
 
@@ -62,7 +68,10 @@ class ChatActions {
         console.log(chatId, queryText);
 
         if (!chatId || !queryText) {
-            res.status(400).json({ message: "Invalid request" });
+            res.status(400).json({ 
+                message: "Invalid request",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
@@ -71,7 +80,10 @@ class ChatActions {
         console.log(chat);
 
         if (!chat) {
-            res.status(404).json({ message: "Chat not found" });
+            res.status(404).json({ 
+                message: "Chat not found",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
@@ -113,7 +125,10 @@ class ChatActions {
                 });
             }
         } else {
-            res.status(500).json({ message: "Failed to send query" });
+            res.status(500).json({ 
+                message: "Failed to send query,Facing issue at server end. Please try again later!",
+                error: true,
+                code: res.statusCode });
         }
     }
 
@@ -158,7 +173,10 @@ class ChatActions {
         const { userId } = req.params;
 
         if (!userId) {
-            res.status(400).json({ message: "Invalid request" });
+            res.status(400).json({ 
+                message: "Invalid request",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
@@ -185,14 +203,20 @@ class ChatActions {
         const { chatId } = req.params;
 
         if (!chatId) {
-            res.status(400).json({ message: "Invalid request" });
+            res.status(400).json({ 
+                message: "Invalid request",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
         const chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
-            res.status(404).json({ message: "Chat not found" });
+            res.status(404).json({ 
+                message: "Chat not found",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
@@ -217,14 +241,20 @@ class ChatActions {
         const { chatId } = req.params;
 
         if (!chatId) {
-            res.status(400).json({ message: "Invalid request" });
+            res.status(400).json({ 
+                message: "Invalid request",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
         const chat = await ChatController.getChatById(chatId);
 
         if (!chat) {
-            res.status(404).json({ message: "Chat not found" });
+            res.status(404).json({ 
+                message: "Chat not found",
+                error: true, 
+                code: res.statusCode });
             return;
         }
 
@@ -252,27 +282,42 @@ class ChatActions {
             const { chatId } = req.params;
             const { rating }: { rating: number } = req.body;
             if (!chatId || !rating) {
-                res.status(400).json({ message: "Invalid request" });
+                res.status(400).json({ 
+                    message: "Invalid request",
+                    error: true, 
+                    code: res.statusCode });
                 return;
             }
 
             const chat = await ChatController.getChatById(chatId);
 
             if (!chat) {
-                res.status(404).json({ message: "Chat not found" });
+                res.status(404).json({ 
+                    message: "Chat not found",
+                    error: true, 
+                    code: res.statusCode });
                 return;
             }
 
             chat.rating = rating;
             const success = await ChatController.updateChat(chatId, chat);
             if (success) {
-                res.status(200).json({ message: "Rating submitted successfully" });
+                res.status(200).json({ 
+                    message: "Rating submitted successfully",
+                    error: false, 
+                    code: res.statusCode });
             } else {
-                res.status(500).json({ message: "Failed to submit rating" });
+                res.status(500).json({ 
+                    message: "Failed to submit rating",
+                    error: true, 
+                    code: res.statusCode });
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+            res.status(500).json({ 
+                message: "Facing issue at server end. Please try again later!",
+                error: true, 
+                code: res.statusCode });
         }
     }
 
@@ -282,27 +327,42 @@ class ChatActions {
             const { chatId } = req.params;
             const { feedback }: { feedback: string } = req.body;
             if (!chatId || !feedback) {
-                res.status(400).json({ message: "Invalid request" });
+                res.status(400).json({ 
+                    message: "Invalid request",
+                    error: true, 
+                    code: res.statusCode });
                 return;
             }
 
             const chat = await ChatController.getChatById(chatId);
 
             if (!chat) {
-                res.status(404).json({ message: "Chat not found" });
+                res.status(404).json({ 
+                    message: "Chat not found",
+                    error: true, 
+                    code: res.statusCode });
                 return;
             }
 
             chat.feedback = feedback;
             const success = await ChatController.updateChat(chatId, chat);
             if (success) {
-                res.status(200).json({ message: "Feedback submitted successfully" });
+                res.status(200).json({ 
+                    message: "Feedback submitted successfully",
+                    error: false, 
+                    code: res.statusCode });
             } else {
-                res.status(500).json({ message: "Failed to submit feedback" });
+                res.status(500).json({ 
+                    message: "Failed to submit feedback",
+                    error: true, 
+                    code: res.statusCode });
             }
         } catch (error) {
             console.error(error.message);
-            res.status(500).json({ message: "Facing issue at server end. Please try again later!" });
+            res.status(500).json({ 
+                message: "Facing issue at server end. Please try again later!",
+                error: true, 
+                code: res.statusCode });
         }
     }
 
@@ -312,7 +372,9 @@ class ChatActions {
             const { chatId } = req.params;
 
             if (!chatId) {
-                res.status(400).json({ message: "Invalid request" });
+                res.status(400).json({ 
+                    message: "Invalid request",
+                    error: true, code: res.statusCode });
                 return;
             }
 
@@ -320,7 +382,9 @@ class ChatActions {
             console.log(chat);
 
             if (!chat) {
-                res.status(404).json({ message: "Chat not found" });
+                res.status(404).json({ 
+                    message: "Chat not found",
+                    error: true, code: res.statusCode });
                 return;
             }
 
