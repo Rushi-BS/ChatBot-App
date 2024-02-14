@@ -35,15 +35,23 @@ class AuthManager {
 
     static verifyToken(token: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            jwt.verify(token, secretKey, (err, decoded) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(decoded);
-                }
-            });
+          jwt.verify(token, secretKey, (err, decoded) => {
+            if (err) {
+              // Handle specific errors
+              if (err.name === 'TokenExpiredError') {
+                console.log('Token expired');
+              } else if (err.name === 'JsonWebTokenError') {
+                console.log('Invalid token');
+              }
+      
+              reject(err);
+            } else {
+              resolve(decoded);
+            }
+          });
         });
-    }
+      }
+      
 }
 
 export default AuthManager;

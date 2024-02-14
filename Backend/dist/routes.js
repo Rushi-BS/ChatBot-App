@@ -77,5 +77,11 @@ const Routes = [
         action: ChatActions_1.default.chatFeedback,
         middleware: Middleware_1.default,
     },
+    {
+        method: 'post',
+        route: '/user/logout',
+        action: UserActions_1.default.logout,
+        middleware: Middleware_1.default,
+    },
 ];
 exports.default = Routes;

@@ -34,10 +34,13 @@ class Middleware {
     static jwtMiddleware(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
             const tokenHeader = req.headers.authorization;
+            //console.log('Headers:', req.headers)
+            console.log('Received Token1:', tokenHeader);
             if (!tokenHeader) {
                 return res.status(401).json({ Error: 'Unauthorized - Missing token' });
             }
             const token = tokenHeader.split(' ')[1];
+            console.log('Received Token2:', token);
             try {
                 const decoded = yield Auth_1.default.verifyToken(token);
                 req.user = decoded;

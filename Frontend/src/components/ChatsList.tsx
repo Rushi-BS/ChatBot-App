@@ -16,22 +16,27 @@ const ChatsList: React.FC = () => {
 
   const fetchChatsList = async () => {
     try {
+         // Log the token right before the request
+      const tokenBeforeRequest = apiHelper.getToken();
+      console.log('Token before request:', tokenBeforeRequest);
       const response: ApiResponse<Array<ChatType>> = await apiHelper.get(
         `/chat/${userId}/chatsList`
       );
-      // console.log("Response:", response.data);
+      console.log("Response:", response.data);
       const { results } = response.data;
       if (results) {
-        // console.log("Chats list:", results);
+        console.log("Chats list:", results);
         dispatch({ type: "SET_CHATS_LIST", payload: results });
       }
     } catch (error) {
-      console.error("Error fetching chats list:", error);
+      console.error("Error fetching chats list:12345", error);
     }
   };
 
   const startNewChat = async () => {
     try {
+
+      //console.log('Stored Token:', localStorage.getItem('token')); // Log the stored token
       const chatName = window.prompt("Enter the name for new chat");
       if (chatName) {
         const reqBody = {

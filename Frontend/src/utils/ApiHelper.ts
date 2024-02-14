@@ -1,24 +1,27 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { ApiResponse } from './type';
 
-// API Helper Class
 class ApiHelper {
     private axiosInstance: AxiosInstance;
 
-    constructor(baseURL: string = "http://localhost:4001") {
-        this.axiosInstance = axios.create({
-            baseURL,
-            // You can add more default settings here
-        });
-    }
+   
+  constructor(baseURL: string = "http://localhost:4001") {
+    this.axiosInstance = axios.create({
+      baseURL,  
+      headers: {
+        Authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : undefined,
+      },
+    });
+  }
 
     // Method to perform GET requests
     public async get<T>(url: string, params?: object): Promise<ApiResponse<T>> {
         try {
+            console.log(this.axiosInstance);
             const response: AxiosResponse<T> = await this.axiosInstance.get<T>(url, { params });
             return response as ApiResponse<T>;  
         } catch (error) {
-            throw new Error('An error occurred while fetching data.');
+            throw new Error('An error occurred while fetching data.yyyyyyyy');
         }
     }
 
@@ -41,6 +44,20 @@ class ApiHelper {
             throw new Error('An error occurred while deleting data.');
         }
     }
+
+    // Method to set Authorization header
+    public setAuthorizationHeader(token: string): void {
+
+    if (token) {
+      this.axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      console.log("apihelper:", this.axiosInstance.defaults.headers.common['Authorization']);
+    }
+    }
+
+    // Inside ApiHelper class
+    public getToken(): string | null {
+    return localStorage.getItem('token');
+  }
 
 }
 

@@ -21,12 +21,15 @@ class Middleware {
 
     static async jwtMiddleware(req: any, res: any, next: any) {
         const tokenHeader = req.headers.authorization;
+        //console.log('Headers:', req.headers)
+        console.log('Received Token1:', tokenHeader);
 
         if (!tokenHeader) {
             return res.status(401).json({ Error: 'Unauthorized - Missing token' });
         }
 
         const token = tokenHeader.split(' ')[1];
+        console.log('Received Token2:', token);
 
         try {
             const decoded = await AuthManager.verifyToken(token);

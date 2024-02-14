@@ -26,13 +26,13 @@ AppDataSource.initialize().then(() => {
 
 // Routes
 Routes.forEach((route) => {
-    // if (route.middleware) {
-    //     // Apply middleware only if specified in the route definition
-    //     // app[route.method](route.route, Middleware.jwtMiddleware, route.action);
-    // } else {
-    //     app[route.method](route.route, route.action);
-    // }
+    if (route.middleware) {
+        //Apply middleware only if specified in the route definition
+        app[route.method](route.route, Middleware.jwtMiddleware, route.action);
+    } else {
         app[route.method](route.route, route.action);
+    }
+        //app[route.method](route.route, route.action);
 });
 
 app.get('/', (req, res) => {

@@ -8,6 +8,7 @@ const cors_1 = __importDefault(require("cors"));
 const data_source_1 = require("./data-source");
 const config_1 = __importDefault(require("./config"));
 const routes_1 = __importDefault(require("./routes"));
+const Middleware_1 = __importDefault(require("./middlewares/Middleware"));
 const app = (0, express_1.default)();
 const { port } = config_1.default;
 app.use((0, cors_1.default)({
@@ -25,13 +26,14 @@ data_source_1.AppDataSource.initialize().then(() => {
 //app.use(Middleware.decryptRequest);
 // Routes
 routes_1.default.forEach((route) => {
-    // if (route.middleware) {
-    //     // Apply middleware only if specified in the route definition
-    //     // app[route.method](route.route, Middleware.jwtMiddleware, route.action);
-    // } else {
-    //     app[route.method](route.route, route.action);
-    // }
-    app[route.method](route.route, route.action);
+    if (route.middleware) {
+        //Apply middleware only if specified in the route definition
+        app[route.method](route.route, Middleware_1.default.jwtMiddleware, route.action);
+    }
+    else {
+        app[route.method](route.route, route.action);
+    }
+    //app[route.method](route.route, route.action);
 });
 app.get('/', (req, res) => {
     res.send('Hello, world!');

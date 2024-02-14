@@ -52,6 +52,13 @@ class AuthManager {
         return new Promise((resolve, reject) => {
             jsonwebtoken_1.default.verify(token, secretKey, (err, decoded) => {
                 if (err) {
+                    // Handle specific errors
+                    if (err.name === 'TokenExpiredError') {
+                        console.log('Token expired');
+                    }
+                    else if (err.name === 'JsonWebTokenError') {
+                        console.log('Invalid token');
+                    }
                     reject(err);
                 }
                 else {
